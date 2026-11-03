@@ -1,0 +1,836 @@
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistema Candango de Salvamento — Laudo de Salvamento</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        background: #041c34;
+        color: #1c354b;
+        min-height: 100vh;
+    }
+
+    button, textarea, input {
+        font: inherit;
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+    /* ESTRUTURA PRINCIPAL */
+
+    .app {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: #062441;
+        border: 2px solid #0b6da7;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    /* CABEÇALHO */
+
+    .topbar {
+        height: 65px;
+        min-height: 65px;
+        background: #052340;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 25px;
+        border-bottom: 1px solid #16476a;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .logo {
+        width: 40px;
+        height: 40px;
+        background: white;
+        color: #07518a;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .brand h1 {
+        font-size: 25px;
+        color: white;
+    }
+
+    .profile-label {
+        border-left: 1px solid #42627c;
+        padding-left: 20px;
+        color: #c5d8e8;
+        font-size: 14px;
+    }
+
+    .more-button {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 25px;
+    }
+
+    /* LAYOUT */
+
+    .layout {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+    }
+
+    /* MENU LATERAL */
+
+    .sidebar {
+        width: 210px;
+        min-width: 210px;
+        background: #052442;
+        border-right: 1px solid #174c70;
+        padding-top: 20px;
+    }
+
+    .menu-item {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 20px;
+        background: transparent;
+        border: none;
+        border-left: 4px solid transparent;
+        color: #d1dfeb;
+        font-size: 14px;
+        text-align: left;
+        transition: 0.2s;
+    }
+
+    .menu-item:hover {
+        background: #0b416f;
+    }
+
+    .menu-item.active {
+        background: #10518a;
+        border-left-color: #2db9f1;
+        color: white;
+        font-weight: bold;
+    }
+
+    .menu-icon {
+        width: 24px;
+        font-size: 20px;
+        text-align: center;
+    }
+
+    /* CONTEÚDO */
+
+    .main-content {
+        flex: 1;
+        min-width: 0;
+        padding: 30px;
+        background: #f5f8fb;
+        overflow-y: auto;
+    }
+
+    /* FORMULÁRIO */
+
+    .form-card {
+        max-width: 950px;
+        margin: 0 auto;
+        background: white;
+        border: 1px solid #e0e7ee;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 4px 18px #102d4510;
+    }
+
+    .form-header {
+        margin-bottom: 25px;
+    }
+
+    .form-header h2 {
+        font-size: 24px;
+        color: #173c5c;
+        margin-bottom: 12px;
+    }
+
+    .form-header p {
+        font-size: 14px;
+        color: #6a7f90;
+    }
+
+    .form-group {
+        margin-bottom: 28px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: bold;
+        color: #263d50;
+        margin-bottom: 10px;
+    }
+
+    .required {
+        color: #ed454c;
+    }
+
+    /* DESCRIÇÃO */
+
+    .description-input {
+        width: 100%;
+        min-height: 125px;
+        padding: 15px;
+        border: 1px solid #ccd9e3;
+        border-radius: 8px;
+        resize: vertical;
+        color: #29465e;
+        font-size: 14px;
+        line-height: 1.6;
+        outline: none;
+    }
+
+    .description-input:focus {
+        border-color: #087bb8;
+        box-shadow: 0 0 0 3px #087bb81a;
+    }
+
+    /* FOTOGRAFIAS */
+
+    .photo-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 13px;
+    }
+
+    .photo-item {
+        position: relative;
+        width: 110px;
+        height: 110px;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #d2dfe9;
+    }
+
+    .photo-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .remove-photo {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 25px;
+        height: 25px;
+        border: none;
+        border-radius: 50%;
+        background: #d92f3c;
+        color: white;
+        font-weight: bold;
+    }
+
+    .add-photo {
+        width: 110px;
+        height: 110px;
+        border: 2px solid #86b1d3;
+        border-radius: 8px;
+        background: #f7fbff;
+        color: #236a9d;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .add-photo:hover {
+        background: #e7f4fd;
+    }
+
+    #photoInput {
+        display: none;
+    }
+
+    /* ASSINATURA DIGITAL */
+
+    .signature-container {
+        position: relative;
+        width: 100%;
+        height: 150px;
+        border: 1px solid #ccd9e3;
+        border-radius: 8px;
+        background: #fbfdff;
+        overflow: hidden;
+    }
+
+    #signatureCanvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+        cursor: crosshair;
+        touch-action: none;
+    }
+
+    .signature-placeholder {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #aab9c6;
+        font-size: 14px;
+        pointer-events: none;
+        text-align: center;
+    }
+
+    .signature-tools {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+    }
+
+    .clear-signature {
+        border: 1px solid #a5bfd2;
+        background: white;
+        color: #32658b;
+        padding: 9px 15px;
+        border-radius: 6px;
+        font-size: 13px;
+    }
+
+    /* BOTÕES INFERIORES */
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        border-top: 1px solid #e5ebf0;
+        padding-top: 25px;
+    }
+
+    .cancel-button,
+    .save-button {
+        min-width: 155px;
+        padding: 14px 22px;
+        border-radius: 7px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .cancel-button {
+        background: white;
+        border: 1px solid #6f9ec2;
+        color: #28628d;
+    }
+
+    .save-button {
+        background: #064577;
+        border: 1px solid #064577;
+        color: white;
+    }
+
+    .save-button:hover {
+        background: #07639e;
+    }
+
+    /* NOTIFICAÇÃO */
+
+    .notification {
+        display: none;
+        position: fixed;
+        right: 25px;
+        bottom: 25px;
+        z-index: 2000;
+        padding: 16px 23px;
+        border-radius: 8px;
+        background: #087b5b;
+        color: white;
+        box-shadow: 0 5px 20px #0003;
+        font-size: 14px;
+    }
+
+    /* RESPONSIVIDADE */
+
+    @media(max-width: 800px) {
+        .sidebar {
+            width: 70px;
+            min-width: 70px;
+        }
+
+        .menu-item {
+            justify-content: center;
+            padding: 17px 5px;
+        }
+
+        .menu-label {
+            display: none;
+        }
+
+        .main-content {
+            padding: 20px;
+        }
+    }
+
+    @media(max-width: 550px) {
+        .layout {
+            flex-direction: column;
+        }
+
+        .sidebar {
+            order: 2;
+            width: 100%;
+            min-width: 100%;
+            height: 60px;
+            display: flex;
+            padding: 0;
+            border-top: 1px solid #174c70;
+        }
+
+        .menu-item {
+            flex: 1;
+            border-left: none;
+            border-top: 3px solid transparent;
+        }
+
+        .menu-item.active {
+            border-left: none;
+            border-top-color: #2db9f1;
+        }
+
+        .main-content {
+            padding: 15px;
+        }
+
+        .form-card {
+            padding: 20px 15px;
+        }
+
+        .form-header h2 {
+            font-size: 21px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .cancel-button,
+        .save-button {
+            width: 100%;
+        }
+
+        .profile-label {
+            font-size: 12px;
+        }
+    }
+</style>
+<link href="../scs-global.css" rel="stylesheet"/><link href="../logo-sistema-candango.png" rel="icon" type="image/png"/></head>
+<body>
+<div class="app">
+<!-- CABEÇALHO -->
+<header class="topbar scs-unified-header"><div class="scs-header-brand"><div aria-hidden="true" class="scs-header-logo"><img alt="Logomarca do Sistema Candango de Salvamento" src="../logo-sistema-candango.png"/></div><strong class="scs-header-title">Sistema Candango de Salvamento</strong><span class="scs-header-role">Socorrista</span></div><div class="scs-header-user"><span class="scs-header-avatar"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></svg></span><span class="scs-header-username">Socorrista</span></div></header>
+<div class="layout">
+<!-- MENU LATERAL -->
+<nav class="sidebar"><a class="menu-item" href="ocorrencias.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 10 9-7 9 7"></path><path d="M5 9v12h14V9"></path><path d="M9 21v-7h6v7"></path></svg></span><span class="menu-label">Início</span></a><a class="menu-item" href="ocorrencias.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect height="16" rx="2" width="16" x="4" y="4"></rect><path d="M8 9h8M8 13h8M8 17h5"></path></svg></span><span class="menu-label">Ocorrências</span></a><a class="menu-item" href="mapa.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"></path></svg></span><span class="menu-label">Mapa</span></a><a class="menu-item" href="escalas.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect height="16" rx="2" width="18" x="3" y="5"></rect><path d="M7 3v4M17 3v4M3 10h18M7 14h3M14 14h3"></path></svg></span><span class="menu-label">Escala de Plantão</span></a><a class="menu-item" href="editar_socorrista.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></svg></span><span class="menu-label">Perfil</span></a><a class="menu-item" href="../index.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 17l5-5-5-5M15 12H3"></path><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"></path></svg></span><span class="menu-label">Sair</span></a></nav>
+<!-- CONTEÚDO PRINCIPAL -->
+<main class="main-content">
+<form class="form-card" id="reportForm">
+<!-- TÍTULO -->
+<div class="form-header">
+<h2>Laudo de Salvamento</h2>
+<p>Ocorrência #4587</p>
+</div>
+<!-- DESCRIÇÃO -->
+<div class="form-group">
+<label for="description">
+                        Descrição do atendimento
+                        <span class="required">*</span>
+</label>
+<textarea class="description-input" id="description" placeholder="Descreva o atendimento realizado..." required="">Vítima encontrada a 30 metros da margem, sem sinais vitais. Realizado resgate e primeiros socorros no local.</textarea>
+</div>
+<!-- FOTOS -->
+<div class="form-group">
+<label>Fotos (opcional)</label>
+<div class="photo-grid" id="photoGrid">
+<button class="add-photo" onclick="document.getElementById('photoInput').click()" type="button">
+                            + Adicionar
+                        </button>
+</div>
+<input accept="image/*" id="photoInput" multiple="" type="file"/>
+</div>
+<!-- ASSINATURA -->
+<div class="form-group">
+<label>Assinatura Digital</label>
+<div class="signature-container">
+<canvas id="signatureCanvas"></canvas>
+<div class="signature-placeholder" id="signaturePlaceholder">
+                            Assine aqui com o mouse ou com o dedo
+                        </div>
+</div>
+<div class="signature-tools">
+<button class="clear-signature" onclick="clearSignature()" type="button">
+                            Limpar assinatura
+                        </button>
+</div>
+</div>
+<!-- BOTÕES -->
+<div class="form-actions">
+<button class="cancel-button" onclick="cancelReport()" type="button">
+                        Cancelar
+                    </button>
+<button class="save-button" type="submit">
+                        Salvar Laudo
+                    </button>
+</div>
+</form>
+</main>
+</div>
+</div>
+<div class="notification" id="notification"></div>
+<script>
+
+/* =====================================
+   FOTOGRAFIAS
+===================================== */
+
+const photoInput = document.getElementById("photoInput");
+const photoGrid = document.getElementById("photoGrid");
+
+let photos = [];
+
+photoInput.addEventListener("change", function(event) {
+
+    const files = Array.from(event.target.files);
+
+    files.forEach(file => {
+
+        if (!file.type.startsWith("image/")) {
+            return;
+        }
+
+        const imageURL = URL.createObjectURL(file);
+
+        const photo = {
+            id: crypto.randomUUID(),
+            file: file,
+            url: imageURL
+        };
+
+        photos.push(photo);
+
+    });
+
+    renderPhotos();
+
+    photoInput.value = "";
+
+});
+
+
+function renderPhotos() {
+
+    const existingPhotos = photoGrid.querySelectorAll(".photo-item");
+
+    existingPhotos.forEach(element => element.remove());
+
+    const addButton = photoGrid.querySelector(".add-photo");
+
+    photos.forEach(photo => {
+
+        const container = document.createElement("div");
+
+        container.className = "photo-item";
+
+        const image = document.createElement("img");
+
+        image.src = photo.url;
+        image.alt = "Fotografia do atendimento";
+
+        const removeButton = document.createElement("button");
+
+        removeButton.type = "button";
+        removeButton.className = "remove-photo";
+        removeButton.textContent = "×";
+        removeButton.title = "Remover fotografia";
+
+        removeButton.onclick = () => removePhoto(photo.id);
+
+        container.appendChild(image);
+        container.appendChild(removeButton);
+
+        photoGrid.insertBefore(container, addButton);
+
+    });
+
+}
+
+
+function removePhoto(id) {
+
+    const photo = photos.find(item => item.id === id);
+
+    if (photo) {
+        URL.revokeObjectURL(photo.url);
+    }
+
+    photos = photos.filter(item => item.id !== id);
+
+    renderPhotos();
+
+}
+
+
+/* =====================================
+   ASSINATURA DIGITAL
+===================================== */
+
+const canvas = document.getElementById("signatureCanvas");
+
+const context = canvas.getContext("2d");
+
+const placeholder = document.getElementById("signaturePlaceholder");
+
+let isDrawing = false;
+let hasSignature = false;
+
+
+function resizeCanvas() {
+
+    const savedSignature = hasSignature
+        ? canvas.toDataURL()
+        : null;
+
+    const rect = canvas.getBoundingClientRect();
+
+    const ratio = window.devicePixelRatio || 1;
+
+    canvas.width = rect.width * ratio;
+    canvas.height = rect.height * ratio;
+
+    context.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+    context.strokeStyle = "#263e52";
+    context.lineWidth = 2;
+    context.lineCap = "round";
+    context.lineJoin = "round";
+
+    if (savedSignature) {
+
+        const image = new Image();
+
+        image.onload = function() {
+            context.drawImage(image, 0, 0, rect.width, rect.height);
+        };
+
+        image.src = savedSignature;
+
+    }
+
+}
+
+
+function getCanvasPosition(event) {
+
+    const rect = canvas.getBoundingClientRect();
+
+    return {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+    };
+
+}
+
+
+canvas.addEventListener("pointerdown", function(event) {
+
+    isDrawing = true;
+    hasSignature = true;
+
+    placeholder.style.display = "none";
+
+    canvas.setPointerCapture(event.pointerId);
+
+    const position = getCanvasPosition(event);
+
+    context.beginPath();
+    context.moveTo(position.x, position.y);
+    context.lineTo(position.x, position.y);
+    context.stroke();
+
+});
+
+
+canvas.addEventListener("pointermove", function(event) {
+
+    if (!isDrawing) return;
+
+    const position = getCanvasPosition(event);
+
+    context.lineTo(position.x, position.y);
+    context.stroke();
+
+});
+
+
+function stopDrawing() {
+    isDrawing = false;
+    context.beginPath();
+}
+
+canvas.addEventListener("pointerup", stopDrawing);
+canvas.addEventListener("pointercancel", stopDrawing);
+
+
+function clearSignature() {
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    hasSignature = false;
+
+    placeholder.style.display = "block";
+
+}
+
+
+/* =====================================
+   SALVAR LAUDO
+===================================== */
+
+document.getElementById("reportForm")
+    .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const description = document.getElementById("description")
+            .value.trim();
+
+        if (!description) {
+            alert("Preencha a descrição do atendimento.");
+            return;
+        }
+
+        const report = {
+
+            occurrenceId: 4587,
+
+            description: description,
+
+            createdAt: new Date().toISOString(),
+
+            photos: photos.map(photo => ({
+                name: photo.file.name,
+                size: photo.file.size,
+                type: photo.file.type
+            })),
+
+            signature: hasSignature
+                ? canvas.toDataURL("image/png")
+                : null
+
+        };
+
+        console.log("Laudo demonstrativo:", report);
+
+        showNotification(
+            "Laudo validado! Demonstração concluída."
+        );
+
+        alert(
+            "Laudo preparado com sucesso!\n\n" +
+            "Ocorrência: #4587\n" +
+            "Fotografias: " + photos.length + "\n" +
+            "Assinatura: " + (hasSignature ? "Sim" : "Não") +
+            "\n\nOs dados não foram enviados a um servidor."
+        );
+
+    });
+
+
+/* =====================================
+   CANCELAR
+===================================== */
+
+function cancelReport() {
+
+    const confirmed = confirm(
+        "Deseja cancelar o preenchimento do laudo?"
+    );
+
+    if (!confirmed) return;
+
+    document.getElementById("reportForm").reset();
+
+    photos.forEach(photo => URL.revokeObjectURL(photo.url));
+
+    photos = [];
+
+    renderPhotos();
+
+    clearSignature();
+
+    showNotification("Preenchimento cancelado.");
+
+}
+
+
+/* =====================================
+   NOTIFICAÇÕES
+===================================== */
+
+let notificationTimer;
+
+function showNotification(message) {
+
+    const notification = document.getElementById("notification");
+
+    notification.textContent = message;
+    notification.style.display = "block";
+
+    clearTimeout(notificationTimer);
+
+    notificationTimer = setTimeout(() => {
+        notification.style.display = "none";
+    }, 3500);
+
+}
+
+
+/* =====================================
+   MENU LATERAL
+===================================== */
+
+function menuClick(page) {
+ const routes = {"Início": "ocorrencias.html", "Ocorrências": "ocorrencias.html", "Mapa": "../banhistas/mapa_banhista.html", "Perfil": "editar_socorrista.html"};
+ if(page === "Sair" || page === "Saída") { if(confirm("Deseja sair do sistema?")) window.location.href="../index.html"; return; }
+ if(routes[page]) { window.location.href=routes[page]; return; }
+ alert("Esta funcionalidade ainda não possui uma página neste projeto.");
+}
+
+
+/* =====================================
+   INICIALIZAÇÃO
+===================================== */
+
+window.addEventListener("load", resizeCanvas);
+
+window.addEventListener("resize", resizeCanvas);
+
+</script>
+</body>
+</html>

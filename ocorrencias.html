@@ -1,0 +1,757 @@
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistema Candango de Salvamento — Ocorrências do Socorrista</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        background: #041b30;
+        color: white;
+        min-height: 100vh;
+    }
+
+    button {
+        font-family: inherit;
+        cursor: pointer;
+    }
+
+    /* CONTAINER PRINCIPAL */
+
+    .system {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        border: 2px solid #1372b0;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #062238;
+    }
+
+    /* CABEÇALHO */
+
+    .topbar {
+        height: 75px;
+        min-height: 75px;
+        background: #05213e;
+        border-bottom: 1px solid #16476a;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 25px;
+    }
+
+    .top-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .logo {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: white;
+        color: #07518a;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 29px;
+        font-weight: bold;
+    }
+
+    .system-name {
+        font-size: 26px;
+        font-weight: bold;
+    }
+
+    .system-profile {
+        border-left: 1px solid #42627c;
+        padding-left: 18px;
+        font-size: 15px;
+        color: #d2e0ed;
+    }
+
+    .top-right {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .avatar {
+        width: 44px;
+        height: 44px;
+        background: #12639b;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 25px;
+    }
+
+    .user-info strong {
+        display: block;
+        font-size: 15px;
+    }
+
+    .user-info span {
+        font-size: 12px;
+        color: #a7c0d3;
+    }
+
+    .more-button {
+        border: none;
+        background: transparent;
+        color: white;
+        font-size: 24px;
+        padding: 10px;
+    }
+
+    /* LAYOUT */
+
+    .layout {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+    }
+
+    /* MENU LATERAL */
+
+    .sidebar {
+        width: 210px;
+        min-width: 210px;
+        background: #052342;
+        border-right: 1px solid #16476a;
+        padding-top: 20px;
+    }
+
+    .menu-item {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 20px;
+        color: #d1dfeb;
+        text-decoration: none;
+        border: none;
+        border-left: 4px solid transparent;
+        background: transparent;
+        text-align: left;
+        font-size: 15px;
+        transition: 0.2s;
+    }
+
+    .menu-item:hover {
+        background: #0b416f;
+    }
+
+    .menu-item.active {
+        background: #10518a;
+        color: white;
+        border-left-color: #35b7f0;
+        font-weight: bold;
+    }
+
+    .menu-icon {
+        width: 25px;
+        text-align: center;
+        font-size: 21px;
+    }
+
+    /* CONTEÚDO PRINCIPAL */
+
+    .main-content {
+        flex: 1;
+        min-width: 0;
+        padding: 20px 25px 25px;
+        background: linear-gradient(
+            135deg,
+            #06283e,
+            #042b36
+        );
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    .page-title {
+        font-size: 28px;
+        margin-bottom: 18px;
+        font-weight: bold;
+    }
+
+    /* QUADRO KANBAN */
+
+    .kanban {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(210px, 1fr));
+        gap: 15px;
+        flex: 1;
+        min-height: 0;
+    }
+
+    .kanban-column {
+        background: rgba(1, 37, 51, 0.85);
+        border-radius: 8px;
+        overflow-y: auto;
+        min-width: 0;
+        scrollbar-width: thin;
+        scrollbar-color: #376782 transparent;
+    }
+
+    .column-header {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        padding: 16px;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .column-header.open {
+        background: #ed4a50;
+    }
+
+    .column-header.moving {
+        background: #f7c779;
+        color: #27384b;
+    }
+
+    .column-header.attending {
+        background: #0ca875;
+    }
+
+    .column-header.completed {
+        background: #08a26f;
+    }
+
+    /* CARTÕES */
+
+    .occurrence-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .occurrence-card {
+        background: #f7f9fb;
+        color: #1c364d;
+        padding: 15px 17px;
+        border-bottom: 2px solid #dce4eb;
+        min-height: 145px;
+    }
+
+    .occurrence-card.open-card {
+        border-bottom: 3px solid #f5a0a2;
+    }
+
+    .occurrence-id {
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .occurrence-description {
+        font-size: 15px;
+        margin-bottom: 10px;
+        line-height: 1.4;
+    }
+
+    .occurrence-coordinates {
+        font-size: 13px;
+        color: #385b77;
+        margin-bottom: 7px;
+    }
+
+    .occurrence-time {
+        font-size: 13px;
+        color: #385b77;
+    }
+
+    .card-actions {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+    }
+
+    .action-button {
+        border: none;
+        border-radius: 6px;
+        padding: 8px 18px;
+        color: white;
+        font-size: 13px;
+        font-weight: bold;
+        transition: 0.2s;
+    }
+
+    .action-button:hover {
+        filter: brightness(1.12);
+        transform: translateY(-1px);
+    }
+
+    .action-button.assume {
+        background: #f28b25;
+    }
+
+    .action-button.arrived {
+        background: #1475a8;
+    }
+
+    .action-button.finish {
+        background: #0ba474;
+    }
+
+    .empty-message {
+        color: #8eafc2;
+        text-align: center;
+        padding: 25px 10px;
+        font-size: 13px;
+    }
+
+    /* NOTIFICAÇÃO */
+
+    .notification {
+        position: fixed;
+        right: 25px;
+        bottom: 25px;
+        background: #0b745b;
+        color: white;
+        padding: 15px 22px;
+        border-radius: 9px;
+        box-shadow: 0 6px 20px #0006;
+        display: none;
+        z-index: 2000;
+        font-size: 14px;
+    }
+
+    /* RESPONSIVIDADE */
+
+    @media (max-width: 1150px) {
+        .main-content {
+            overflow-x: auto;
+        }
+
+        .kanban {
+            min-width: 900px;
+        }
+    }
+
+    @media (max-width: 700px) {
+        .topbar {
+            padding: 0 12px;
+            height: 65px;
+            min-height: 65px;
+        }
+
+        .system-name {
+            font-size: 20px;
+        }
+
+        .system-profile {
+            font-size: 12px;
+            padding-left: 10px;
+        }
+
+        .user-info {
+            display: none;
+        }
+
+        .layout {
+            flex-direction: column;
+        }
+
+        .sidebar {
+            order: 2;
+            width: 100%;
+            min-width: 100%;
+            height: 65px;
+            padding: 0;
+            display: flex;
+            border-right: none;
+            border-top: 1px solid #16476a;
+        }
+
+        .menu-item {
+            justify-content: center;
+            flex: 1;
+            padding: 10px 5px;
+            border-left: none;
+            border-top: 3px solid transparent;
+        }
+
+        .menu-item.active {
+            border-left: none;
+            border-top-color: #35b7f0;
+        }
+
+        .menu-label {
+            display: none;
+        }
+
+        .main-content {
+            padding: 20px 15px;
+        }
+
+        .page-title {
+            font-size: 24px;
+        }
+
+        .kanban {
+            min-width: 850px;
+        }
+    }
+</style>
+<link href="../scs-global.css" rel="stylesheet"/><link href="../logo-sistema-candango.png" rel="icon" type="image/png"/></head>
+<body>
+<div class="system">
+<!-- CABEÇALHO -->
+<header class="topbar scs-unified-header"><div class="scs-header-brand"><div aria-hidden="true" class="scs-header-logo"><img alt="Logomarca do Sistema Candango de Salvamento" src="../logo-sistema-candango.png"/></div><strong class="scs-header-title">Sistema Candango de Salvamento</strong><span class="scs-header-role">Socorrista</span></div><div class="scs-header-user"><span class="scs-header-avatar"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></svg></span><span class="scs-header-username">Socorrista</span></div></header>
+<!-- ESTRUTURA PRINCIPAL -->
+<div class="layout">
+<!-- MENU LATERAL -->
+<nav class="sidebar"><a class="menu-item active" href="ocorrencias.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 10 9-7 9 7"></path><path d="M5 9v12h14V9"></path><path d="M9 21v-7h6v7"></path></svg></span><span class="menu-label">Início</span></a><a class="menu-item active" href="ocorrencias.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect height="16" rx="2" width="16" x="4" y="4"></rect><path d="M8 9h8M8 13h8M8 17h5"></path></svg></span><span class="menu-label">Ocorrências</span></a><a class="menu-item" href="mapa.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"></path></svg></span><span class="menu-label">Mapa</span></a><a class="menu-item" href="escalas.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect height="16" rx="2" width="18" x="3" y="5"></rect><path d="M7 3v4M17 3v4M3 10h18M7 14h3M14 14h3"></path></svg></span><span class="menu-label">Escala de Plantão</span></a><a class="menu-item" href="editar_socorrista.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></svg></span><span class="menu-label">Perfil</span></a><a class="menu-item" href="../index.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 17l5-5-5-5M15 12H3"></path><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"></path></svg></span><span class="menu-label">Sair</span></a></nav>
+<!-- CONTEÚDO -->
+<main class="main-content">
+<h1 class="page-title">Ocorrências</h1>
+<div class="kanban">
+<!-- ABERTAS -->
+<section class="kanban-column">
+<div class="column-header open">
+                        Abertas <span id="count-open">(0)</span>
+</div>
+<div class="occurrence-list" id="list-open"></div>
+</section>
+<!-- EM DESLOCAMENTO -->
+<section class="kanban-column">
+<div class="column-header moving">
+                        Em deslocamento <span id="count-moving">(0)</span>
+</div>
+<div class="occurrence-list" id="list-moving"></div>
+</section>
+<!-- EM ATENDIMENTO -->
+<section class="kanban-column">
+<div class="column-header attending">
+                        Em atendimento <span id="count-attending">(0)</span>
+</div>
+<div class="occurrence-list" id="list-attending"></div>
+</section>
+<!-- CONCLUÍDAS -->
+<section class="kanban-column">
+<div class="column-header completed">
+                        Concluídas <span id="count-completed">(0)</span>
+</div>
+<div class="occurrence-list" id="list-completed"></div>
+</section>
+</div>
+</main>
+</div>
+</div>
+<!-- NOTIFICAÇÃO -->
+<div class="notification" id="notification"></div>
+<script>
+
+    /* =====================================
+       BANCO DE DADOS DEMONSTRATIVO
+    ===================================== */
+
+    let occurrences = [
+
+        {
+            id: 45987,
+            description: "Afogamento / Emergência",
+            latitude: -15.8012,
+            longitude: -47.8421,
+            time: "12:34",
+            status: "open"
+        },
+
+        {
+            id: 45986,
+            description: "Embarcação à deriva",
+            latitude: -15.7934,
+            longitude: -47.8312,
+            time: "11:20",
+            status: "open"
+        },
+
+        {
+            id: 45964,
+            description: "Pessoa à deriva",
+            latitude: -15.7921,
+            longitude: -47.8490,
+            time: "10:15",
+            status: "open"
+        },
+
+        {
+            id: 45983,
+            description: "Queda de embarcação",
+            latitude: -15.8010,
+            longitude: -47.8500,
+            time: "09:42",
+            status: "moving"
+        },
+
+        {
+            id: 45982,
+            description: "Apoio a embarcação",
+            latitude: -15.7890,
+            longitude: -47.8300,
+            time: "08:42",
+            status: "moving"
+        },
+
+        {
+            id: 45981,
+            description: "Medusa",
+            latitude: -15.7800,
+            longitude: -47.8305,
+            time: "08:10",
+            status: "attending"
+        },
+
+        {
+            id: 45979,
+            description: "Resgate realizado",
+            latitude: -15.7832,
+            longitude: -47.8271,
+            time: "16:50",
+            status: "completed"
+        },
+
+        {
+            id: 45978,
+            description: "Ferimento leve",
+            latitude: -15.7901,
+            longitude: -47.8354,
+            time: "15:12",
+            status: "completed"
+        },
+
+        {
+            id: 45976,
+            description: "Apoio à embarcação",
+            latitude: -15.7953,
+            longitude: -47.8402,
+            time: "13:45",
+            status: "completed"
+        },
+
+        {
+            id: 45975,
+            description: "Atendimento preventivo",
+            latitude: -15.7925,
+            longitude: -47.8350,
+            time: "12:30",
+            status: "completed"
+        }
+
+    ];
+
+
+    /* =====================================
+       RENDERIZAR QUADRO
+    ===================================== */
+
+    function renderOccurrences() {
+
+        const statuses = [
+            "open",
+            "moving",
+            "attending",
+            "completed"
+        ];
+
+        statuses.forEach(status => {
+
+            const list = document.getElementById("list-" + status);
+
+            const filtered = occurrences.filter(
+                occurrence => occurrence.status === status
+            );
+
+            document.getElementById("count-" + status)
+                .textContent = "(" + filtered.length + ")";
+
+            list.innerHTML = "";
+
+            if (filtered.length === 0) {
+
+                list.innerHTML = `
+                    <div class="empty-message">
+                        Nenhuma ocorrência nesta etapa.
+                    </div>
+                `;
+
+                return;
+            }
+
+            filtered.forEach(occurrence => {
+
+                const card = document.createElement("article");
+
+                card.className = "occurrence-card";
+
+                if (status === "open") {
+                    card.classList.add("open-card");
+                }
+
+                let buttonHTML = "";
+
+                if (status === "open") {
+
+                    buttonHTML = `
+                        <button class="action-button assume"
+                            onclick="changeStatus(${occurrence.id}, 'moving')">
+                            Assumir
+                        </button>
+                    `;
+
+                } else if (status === "moving") {
+
+                    buttonHTML = `
+                        <button class="action-button arrived"
+                            onclick="changeStatus(${occurrence.id}, 'attending')">
+                            Iniciar atendimento
+                        </button>
+                    `;
+
+                } else if (status === "attending") {
+
+                    buttonHTML = `
+                        <button class="action-button finish"
+                            onclick="changeStatus(${occurrence.id}, 'completed')">
+                            Concluir
+                        </button>
+                    `;
+
+                }
+
+                card.innerHTML = `
+                    <div class="occurrence-id">
+                        #${occurrence.id}
+                    </div>
+
+                    <div class="occurrence-description"></div>
+
+                    <div class="occurrence-coordinates">
+                        ${occurrence.latitude.toFixed(4)},
+                        ${occurrence.longitude.toFixed(4)}
+                    </div>
+
+                    <div class="occurrence-time">
+                        ${occurrence.time}
+                    </div>
+
+                    <div class="card-actions">
+                        ${buttonHTML}
+                    </div>
+                `;
+
+                card.querySelector(".occurrence-id").style.cursor="pointer";
+                card.querySelector(".occurrence-id").title="Abrir detalhes";
+                card.querySelector(".occurrence-id").onclick=()=>window.location.href="detalhe_ocorrencia.html?id="+occurrence.id;
+                card.querySelector(".occurrence-description")
+                    .textContent = occurrence.description;
+
+                list.appendChild(card);
+
+            });
+
+        });
+
+    }
+
+
+    /* =====================================
+       ALTERAR STATUS DA OCORRÊNCIA
+    ===================================== */
+
+    function changeStatus(id, newStatus) {
+
+        const occurrence = occurrences.find(
+            item => item.id === id
+        );
+
+        if (!occurrence) return;
+
+        const messages = {
+            moving: "Deseja assumir esta ocorrência?",
+            attending: "Confirmar início do atendimento?",
+            completed: "Deseja concluir esta ocorrência?"
+        };
+
+        const confirmed = confirm(messages[newStatus]);
+
+        if (!confirmed) return;
+
+        occurrence.status = newStatus;
+
+        renderOccurrences();
+
+        const successMessages = {
+            moving: "Ocorrência assumida com sucesso!",
+            attending: "Atendimento iniciado!",
+            completed: "Ocorrência concluída!"
+        };
+
+        showNotification(successMessages[newStatus]);
+
+    }
+
+
+    /* =====================================
+       NOTIFICAÇÃO
+    ===================================== */
+
+    let notificationTimer;
+
+    function showNotification(message) {
+
+        const notification = document.getElementById("notification");
+
+        notification.textContent = message;
+
+        notification.style.display = "block";
+
+        clearTimeout(notificationTimer);
+
+        notificationTimer = setTimeout(() => {
+            notification.style.display = "none";
+        }, 3000);
+
+    }
+
+
+    /* =====================================
+       MENU LATERAL
+    ===================================== */
+
+    function menuClick(page, element) {
+ const routes={"Início":"ocorrencias.html","Ocorrências":"ocorrencias.html","Mapa":"../banhistas/mapa_banhista.html","Escala de Plantão":"escalas.html","Perfil":"editar_socorrista.html"};
+ if(page==="Sair") { if(confirm("Deseja sair do sistema?")) window.location.href="../index.html"; return; }
+ if(routes[page]) window.location.href=routes[page];
+}
+
+
+    /* =====================================
+       INICIAR SISTEMA
+    ===================================== */
+
+    document.addEventListener("DOMContentLoaded", () => {
+
+        renderOccurrences();
+
+    });
+
+</script>
+</body>
+</html>

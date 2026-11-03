@@ -1,0 +1,1103 @@
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistema Candango de Salvamento — Detalhes da Ocorrência</title>
+<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #05233e;
+    color: #17364e;
+    min-height: 100vh;
+}
+
+button, input, select, textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.app {
+    max-width: 1450px;
+    min-height: 100vh;
+    margin: auto;
+    background: #f8fbfd;
+    border: 2px solid #0876b6;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* CABEÇALHO */
+
+.topbar {
+    height: 65px;
+    background: #052442;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 25px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: bold;
+}
+
+.logo {
+    width: 37px;
+    height: 37px;
+    background: white;
+    color: #07518a;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 27px;
+}
+
+.more-button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 25px;
+}
+
+/* CONTEÚDO */
+
+.content {
+    padding: 25px 30px 35px;
+}
+
+.back-button {
+    background: transparent;
+    border: none;
+    color: #175b8d;
+    font-weight: bold;
+    margin-bottom: 18px;
+}
+
+.back-button:hover {
+    text-decoration: underline;
+}
+
+.occurrence-heading {
+    margin-bottom: 25px;
+}
+
+.heading-line {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.heading-line h1 {
+    font-size: 27px;
+    color: #142c40;
+}
+
+.status-badge {
+    padding: 5px 17px;
+    border-radius: 30px;
+    background: #ef4444;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.status-badge.moving {
+    background: #f0a83c;
+}
+
+.status-badge.attending {
+    background: #0b9f78;
+}
+
+.status-badge.completed {
+    background: #267caa;
+}
+
+.description {
+    margin-top: 8px;
+    color: #657789;
+    font-size: 16px;
+}
+
+.metadata {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-top: 13px;
+    color: #536b7e;
+    font-size: 14px;
+}
+
+/* TRÊS COLUNAS */
+
+.details-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr .85fr;
+    gap: 22px;
+    align-items: stretch;
+}
+
+.panel {
+    background: #f9fbfd;
+    border: 1px solid #dce5ed;
+    border-radius: 11px;
+    padding: 20px;
+    box-shadow: 0 2px 8px #17364e0a;
+}
+
+.panel h2 {
+    font-size: 16px;
+    color: #204b70;
+    margin-bottom: 20px;
+}
+
+/* INFORMAÇÕES */
+
+.info-row {
+    display: grid;
+    grid-template-columns: 38% 62%;
+    gap: 8px;
+    padding: 13px 0;
+    border-bottom: 1px solid #e4ebf1;
+    font-size: 14px;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    color: #526476;
+}
+
+.info-value {
+    color: #3b5369;
+    overflow-wrap: anywhere;
+}
+
+.priority {
+    color: #ef6535;
+    font-weight: bold;
+}
+
+.status-text {
+    color: #dd8434;
+    font-weight: bold;
+}
+
+/* MAPA */
+
+.map-panel {
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    min-height: 295px;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    min-height: 295px;
+    background: #0b4358;
+}
+
+.map-button {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    z-index: 500;
+    background: #063d70;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.map-button:hover {
+    background: #08629d;
+}
+
+/* AÇÕES */
+
+.actions-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.actions-panel h2 {
+    margin-bottom: 4px;
+}
+
+.action-button {
+    width: 100%;
+    padding: 13px 12px;
+    border: 1px solid #6b9cc2;
+    border-radius: 8px;
+    background: #f8fbff;
+    color: #215d8e;
+    text-align: left;
+    font-weight: bold;
+    font-size: 14px;
+    transition: .2s;
+}
+
+.action-button:hover {
+    background: #e3f1fb;
+}
+
+.action-button.primary {
+    background: #07599f;
+    color: white;
+    border-color: #07599f;
+}
+
+.action-button.primary:hover {
+    background: #0877c1;
+}
+
+.action-button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* HISTÓRICO */
+
+.history-panel {
+    margin-top: 25px;
+    min-height: 175px;
+}
+
+.timeline {
+    position: relative;
+    margin-top: 18px;
+    padding-left: 22px;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 10px;
+    bottom: 15px;
+    width: 2px;
+    background: #d4e2ed;
+}
+
+.timeline-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    padding: 0 0 20px;
+    font-size: 13px;
+    color: #53687b;
+}
+
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: -21px;
+    top: 4px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #5389b3;
+}
+
+.timeline-time {
+    min-width: 45px;
+    color: #526e86;
+}
+
+.timeline-description {
+    flex: 1;
+}
+
+/* MODAL */
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    background: #001b30b8;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal {
+    width: 100%;
+    max-width: 480px;
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 15px 50px #0004;
+}
+
+.modal h2 {
+    margin-bottom: 15px;
+    color: #163e60;
+}
+
+.modal label {
+    display: block;
+    margin: 15px 0 7px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.modal select,
+.modal textarea,
+.modal input {
+    width: 100%;
+    border: 1px solid #bacbd8;
+    border-radius: 7px;
+    padding: 12px;
+    color: #17364e;
+}
+
+.modal textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-actions button {
+    padding: 11px 18px;
+    border-radius: 7px;
+    border: none;
+}
+
+.cancel-button {
+    background: #e8eef3;
+    color: #27475f;
+}
+
+.save-button {
+    background: #07599f;
+    color: white;
+}
+
+/* OBSERVAÇÕES E LAUDOS */
+
+.extra-panel {
+    margin-top: 20px;
+    display: none;
+}
+
+.extra-panel.visible {
+    display: block;
+}
+
+.extra-entry {
+    padding: 12px 0;
+    border-bottom: 1px solid #e1e8ef;
+    color: #4d657a;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.extra-entry:last-child {
+    border-bottom: none;
+}
+
+/* RESPONSIVIDADE */
+
+@media(max-width: 1000px) {
+    .details-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .actions-panel {
+        grid-column: 1 / -1;
+    }
+}
+
+@media(max-width: 650px) {
+    .content {
+        padding: 20px 15px;
+    }
+
+    .heading-line h1 {
+        font-size: 23px;
+    }
+
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .actions-panel {
+        grid-column: auto;
+    }
+
+    .map-panel {
+        height: 300px;
+    }
+
+    .metadata {
+        font-size: 12px;
+    }
+
+    .timeline-item {
+        gap: 10px;
+    }
+}
+</style>
+<link href="../scs-global.css" rel="stylesheet"/><link href="../logo-sistema-candango.png" rel="icon" type="image/png"/></head>
+<body>
+<div class="app">
+<!-- CABEÇALHO -->
+<header class="topbar scs-unified-header"><div class="scs-header-brand"><div aria-hidden="true" class="scs-header-logo"><img alt="Logomarca do Sistema Candango de Salvamento" src="../logo-sistema-candango.png"/></div><strong class="scs-header-title">Sistema Candango de Salvamento</strong><span class="scs-header-role">Socorrista</span></div><div class="scs-header-user"><span class="scs-header-avatar"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></svg></span><span class="scs-header-username">Socorrista</span></div></header>
+<main class="content">
+<!-- VOLTAR -->
+<button class="back-button" onclick="goBack()">
+            ← Voltar
+        </button>
+<!-- TÍTULO -->
+<section class="occurrence-heading">
+<div class="heading-line">
+<h1>Ocorrência #<span id="occurrenceId">4587</span></h1>
+<span class="status-badge" id="statusBadge">Aberta</span>
+</div>
+<p class="description" id="occurrenceDescription">
+                Afogamento / Emergência
+            </p>
+<div class="metadata">
+<span>◷ <span id="occurrenceTime">12:34</span></span>
+<span>•</span>
+<span>♧ <span id="coordinates">-15.8012, -47.8421</span></span>
+<span>•</span>
+<span>⊙ Precisão: <span id="accuracy">8m</span></span>
+</div>
+</section>
+<!-- INFORMAÇÕES, MAPA E AÇÕES -->
+<section class="details-grid">
+<!-- INFORMAÇÕES -->
+<div class="panel">
+<h2>Informações</h2>
+<div class="info-row">
+<span class="info-label">Tipo</span>
+<span class="info-value" id="infoType">
+                        Afogamento / Emergência
+                    </span>
+</div>
+<div class="info-row">
+<span class="info-label">Prioridade</span>
+<span class="priority" id="infoPriority">Alta</span>
+</div>
+<div class="info-row">
+<span class="info-label">Status</span>
+<span class="status-text" id="infoStatus">Aberta</span>
+</div>
+<div class="info-row">
+<span class="info-label">Localização</span>
+<span class="info-value" id="infoLocation">
+                        -15.8012, -47.8421
+                    </span>
+</div>
+<div class="info-row">
+<span class="info-label">Data/Hora</span>
+<span class="info-value" id="infoDate">
+                        12/06/2025 12:34
+                    </span>
+</div>
+</div>
+<!-- MAPA -->
+<div class="panel map-panel">
+<div id="map"></div>
+<button class="map-button" onclick="openFullMap()">
+                    ◉ Ver no mapa
+                </button>
+</div>
+<!-- AÇÕES -->
+<div class="panel actions-panel">
+<h2>Ações</h2>
+<button class="action-button primary" id="assumeButton" onclick="assumeOccurrence()">
+                    ✎ Assumir ocorrência
+                </button>
+<button class="action-button" onclick="openStatusModal()">
+                    ◇ Atualizar status
+                </button>
+<button class="action-button" onclick="window.location.href='laudo_salvamento.html'">
+                    ◇ Anexar laudo
+                </button>
+<button class="action-button" onclick="openModal('notesModal')">
+                    ✎ Adicionar observações
+                </button>
+</div>
+</section>
+<!-- HISTÓRICO -->
+<section class="panel history-panel">
+<h2>Histórico de Status</h2>
+<div class="timeline" id="timeline"></div>
+</section>
+<!-- OBSERVAÇÕES -->
+<section class="panel extra-panel" id="notesPanel">
+<h2>Observações registradas</h2>
+<div id="notesList"></div>
+</section>
+<!-- LAUDOS -->
+<section class="panel extra-panel" id="reportsPanel">
+<h2>Laudos anexados</h2>
+<div id="reportsList"></div>
+</section>
+</main>
+</div>
+<!-- MODAL STATUS -->
+<div class="modal-overlay" id="statusModal">
+<div class="modal">
+<h2>Atualizar status</h2>
+<label for="statusSelect">Novo status</label>
+<select id="statusSelect">
+<option value="open">Aberta</option>
+<option value="moving">Em deslocamento</option>
+<option value="attending">Em atendimento</option>
+<option value="completed">Concluída</option>
+</select>
+<div class="modal-actions">
+<button class="cancel-button" onclick="closeModals()">
+                Cancelar
+            </button>
+<button class="save-button" onclick="saveStatus()">
+                Salvar
+            </button>
+</div>
+</div>
+</div>
+<!-- MODAL LAUDO -->
+<div class="modal-overlay" id="reportModal">
+<div class="modal">
+<h2>Anexar laudo</h2>
+<label for="reportFile">Selecionar arquivo</label>
+<input accept=".pdf,.jpg,.jpeg,.png" id="reportFile" type="file"/>
+<div class="modal-actions">
+<button class="cancel-button" onclick="closeModals()">
+                Cancelar
+            </button>
+<button class="save-button" onclick="attachReport()">
+                Anexar
+            </button>
+</div>
+</div>
+</div>
+<!-- MODAL OBSERVAÇÕES -->
+<div class="modal-overlay" id="notesModal">
+<div class="modal">
+<h2>Adicionar observação</h2>
+<label for="noteText">Descrição</label>
+<textarea id="noteText" placeholder="Descreva as informações do atendimento..."></textarea>
+<div class="modal-actions">
+<button class="cancel-button" onclick="closeModals()">
+                Cancelar
+            </button>
+<button class="save-button" onclick="saveNote()">
+                Salvar observação
+            </button>
+</div>
+</div>
+</div>
+<script>
+
+/* ===================================
+   DADOS DEMONSTRATIVOS
+=================================== */
+
+const occurrence = {
+    id: 4587,
+    description: "Afogamento / Emergência",
+    priority: "Alta",
+    latitude: -15.8012,
+    longitude: -47.8421,
+    accuracy: 8,
+    date: "12/06/2025",
+    time: "12:34",
+    status: "open"
+};
+
+const statusNames = {
+    open: "Aberta",
+    moving: "Em deslocamento",
+    attending: "Em atendimento",
+    completed: "Concluída"
+};
+
+let history = [
+    {
+        time: "12:34",
+        text: "Ocorrência criada - Sistema"
+    }
+];
+
+let notes = [];
+let reports = [];
+let map = null;
+
+
+/* ===================================
+   INICIALIZAR PÁGINA
+=================================== */
+
+function initializePage() {
+
+    document.getElementById("occurrenceId")
+        .textContent = occurrence.id;
+
+    document.getElementById("occurrenceDescription")
+        .textContent = occurrence.description;
+
+    document.getElementById("occurrenceTime")
+        .textContent = occurrence.time;
+
+    const coordinates =
+        occurrence.latitude.toFixed(4) + ", " +
+        occurrence.longitude.toFixed(4);
+
+    document.getElementById("coordinates")
+        .textContent = coordinates;
+
+    document.getElementById("infoLocation")
+        .textContent = coordinates;
+
+    document.getElementById("accuracy")
+        .textContent = occurrence.accuracy + "m";
+
+    document.getElementById("infoType")
+        .textContent = occurrence.description;
+
+    document.getElementById("infoPriority")
+        .textContent = occurrence.priority;
+
+    document.getElementById("infoDate")
+        .textContent = occurrence.date + " " + occurrence.time;
+
+    updateStatusDisplay();
+    renderHistory();
+    initializeMap();
+}
+
+
+/* ===================================
+   MAPA LEAFLET
+=================================== */
+
+function initializeMap() {
+
+    if (typeof L === "undefined") {
+        document.getElementById("map").textContent =
+            "Não foi possível carregar o mapa. Verifique sua conexão.";
+        return;
+    }
+
+    map = L.map("map", {
+        zoomControl: false
+    }).setView(
+        [occurrence.latitude, occurrence.longitude],
+        14
+    );
+
+    L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+            attribution: "Tiles © Esri",
+            maxZoom: 19
+        }
+    ).addTo(map);
+
+    const markerIcon = L.divIcon({
+        className: "",
+        html: `
+            <div style="
+                background:#e63935;
+                border:3px solid white;
+                width:35px;
+                height:35px;
+                border-radius:50% 50% 50% 0;
+                transform:rotate(-45deg);
+                box-shadow:0 3px 8px #0007;
+                display:grid;
+                place-items:center;
+            ">
+                <span style="
+                    width:11px;
+                    height:11px;
+                    background:white;
+                    border-radius:50%;
+                "></span>
+            </div>
+        `,
+        iconSize: [35,35],
+        iconAnchor: [17,35]
+    });
+
+    L.marker(
+        [occurrence.latitude, occurrence.longitude],
+        {icon: markerIcon}
+    ).addTo(map)
+    .bindPopup(
+        "<strong>Ocorrência #" + occurrence.id + "</strong>" +
+        "<p>" + occurrence.description + "</p>"
+    );
+
+}
+
+function openFullMap() {
+
+    const lat = occurrence.latitude;
+    const lng = occurrence.longitude;
+
+    const url =
+        `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=16/${lat}/${lng}`;
+
+    window.open(url, "_blank", "noopener,noreferrer");
+
+}
+
+
+/* ===================================
+   ATUALIZAR STATUS
+=================================== */
+
+function updateStatusDisplay() {
+
+    const name = statusNames[occurrence.status];
+
+    const badge = document.getElementById("statusBadge");
+
+    badge.textContent = name;
+
+    badge.className = "status-badge";
+
+    if (occurrence.status !== "open") {
+        badge.classList.add(occurrence.status);
+    }
+
+    document.getElementById("infoStatus")
+        .textContent = name;
+
+    const assumeButton = document.getElementById("assumeButton");
+
+    if (occurrence.status === "open") {
+        assumeButton.disabled = false;
+        assumeButton.textContent = "✎ Assumir ocorrência";
+    } else {
+        assumeButton.disabled = true;
+        assumeButton.textContent = "✓ Ocorrência assumida";
+    }
+
+}
+
+function assumeOccurrence() {
+
+    if (occurrence.status !== "open") return;
+
+    const confirmed = confirm(
+        "Deseja assumir a ocorrência #" + occurrence.id + "?"
+    );
+
+    if (!confirmed) return;
+
+    changeStatus("moving");
+
+    alert("Ocorrência assumida com sucesso!");
+
+}
+
+function openStatusModal() {
+
+    document.getElementById("statusSelect").value =
+        occurrence.status;
+
+    openModal("statusModal");
+
+}
+
+function saveStatus() {
+
+    const newStatus = document.getElementById("statusSelect").value;
+
+    if (newStatus === occurrence.status) {
+        closeModals();
+        return;
+    }
+
+    changeStatus(newStatus);
+
+    closeModals();
+
+}
+
+function changeStatus(newStatus) {
+
+    occurrence.status = newStatus;
+
+    const currentTime = new Date().toLocaleTimeString(
+        "pt-BR",
+        {hour:"2-digit",minute:"2-digit"}
+    );
+
+    history.push({
+        time: currentTime,
+        text: statusNames[newStatus] + " - Carlos Silva"
+    });
+
+    updateStatusDisplay();
+    renderHistory();
+
+}
+
+
+/* ===================================
+   HISTÓRICO
+=================================== */
+
+function renderHistory() {
+
+    const timeline = document.getElementById("timeline");
+
+    timeline.innerHTML = "";
+
+    history.forEach(item => {
+
+        const row = document.createElement("div");
+
+        row.className = "timeline-item";
+
+        const time = document.createElement("span");
+        time.className = "timeline-time";
+        time.textContent = item.time;
+
+        const description = document.createElement("span");
+        description.className = "timeline-description";
+        description.textContent = "◷ " + item.text;
+
+        row.appendChild(time);
+        row.appendChild(description);
+
+        timeline.appendChild(row);
+
+    });
+
+}
+
+
+/* ===================================
+   MODAIS
+=================================== */
+
+function openModal(id) {
+
+    document.getElementById(id)
+        .classList.add("active");
+
+}
+
+function closeModals() {
+
+    document.querySelectorAll(".modal-overlay")
+        .forEach(modal => {
+            modal.classList.remove("active");
+        });
+
+}
+
+document.querySelectorAll(".modal-overlay")
+    .forEach(modal => {
+
+        modal.addEventListener("click", function(event) {
+
+            if (event.target === modal) {
+                closeModals();
+            }
+
+        });
+
+    });
+
+document.addEventListener("keydown", function(event) {
+
+    if (event.key === "Escape") {
+        closeModals();
+    }
+
+});
+
+
+/* ===================================
+   OBSERVAÇÕES
+=================================== */
+
+function saveNote() {
+
+    const input = document.getElementById("noteText");
+
+    const text = input.value.trim();
+
+    if (!text) {
+        alert("Digite uma observação.");
+        return;
+    }
+
+    notes.push({
+        text: text,
+        date: new Date().toLocaleString("pt-BR")
+    });
+
+    renderNotes();
+
+    input.value = "";
+
+    closeModals();
+
+}
+
+function renderNotes() {
+
+    const panel = document.getElementById("notesPanel");
+    const list = document.getElementById("notesList");
+
+    panel.classList.add("visible");
+
+    list.innerHTML = "";
+
+    notes.forEach(note => {
+
+        const entry = document.createElement("div");
+        entry.className = "extra-entry";
+
+        const date = document.createElement("strong");
+        date.textContent = note.date;
+
+        const description = document.createElement("p");
+        description.textContent = note.text;
+
+        entry.appendChild(date);
+        entry.appendChild(description);
+
+        list.appendChild(entry);
+
+    });
+
+}
+
+
+/* ===================================
+   LAUDOS
+=================================== */
+
+function attachReport() {
+
+    const input = document.getElementById("reportFile");
+
+    if (!input.files.length) {
+        alert("Selecione um arquivo.");
+        return;
+    }
+
+    const file = input.files[0];
+
+    const allowedTypes = [
+        "application/pdf",
+        "image/jpeg",
+        "image/png"
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+        alert("Selecione um PDF, JPG ou PNG.");
+        return;
+    }
+
+    reports.push({
+        name: file.name,
+        date: new Date().toLocaleString("pt-BR")
+    });
+
+    renderReports();
+
+    input.value = "";
+
+    closeModals();
+
+    alert("Laudo adicionado à demonstração. O arquivo não foi enviado a um servidor.");
+
+}
+
+function renderReports() {
+
+    const panel = document.getElementById("reportsPanel");
+    const list = document.getElementById("reportsList");
+
+    panel.classList.add("visible");
+
+    list.innerHTML = "";
+
+    reports.forEach(report => {
+
+        const entry = document.createElement("div");
+        entry.className = "extra-entry";
+
+        const filename = document.createElement("strong");
+        filename.textContent = "📎 " + report.name;
+
+        const date = document.createElement("p");
+        date.textContent = report.date;
+
+        entry.appendChild(filename);
+        entry.appendChild(date);
+
+        list.appendChild(entry);
+
+    });
+
+}
+
+
+/* ===================================
+   VOLTAR
+=================================== */
+
+function goBack(){window.location.href="ocorrencias.html";}
+
+
+/* ===================================
+   INICIAR
+=================================== */
+
+document.addEventListener("DOMContentLoaded", initializePage);
+
+</script>
+</body>
+</html>

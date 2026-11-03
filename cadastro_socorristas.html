@@ -1,0 +1,305 @@
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistema Candango de Salvamento — Cadastro de Socorrista</title>
+<style>
+:root{
+  --orange:#ff9f3d;
+  --navy:#041b31;
+  --muted:#adc5d8;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;
+  font-family:Arial,Helvetica,sans-serif;color:white;
+  background:linear-gradient(#061a2ca6,#061a2cce),
+  url("fundo-lago.jpg") center/cover fixed;
+}
+.shell{
+  margin:0 24px;min-height:100vh;
+  display:grid;grid-template-columns:1fr 1.05fr;
+  gap:45px;padding:55px 5%;
+  border:1px solid #ffffff35;border-radius:24px;
+  background:#071c2b85;backdrop-filter:blur(9px);
+}
+.identity{display:flex;flex-direction:column;justify-content:space-between}
+.brand{display:flex;gap:28px;align-items:flex-start}
+.logo{
+  width:115px;height:115px;flex-shrink:0;
+  background:white;border-radius:50%;
+  display:grid;place-items:center;
+}
+.logo svg{width:75px}
+.brand h1{font-size:62px;margin:0 0 12px}
+.brand p{font-size:29px;line-height:1.5;margin:0}
+.slogan{font-size:32px;font-weight:bold;line-height:1.6}
+.slogan:after{
+  content:"";display:block;width:140px;height:4px;
+  background:var(--orange);margin-top:24px;
+}
+.panel{
+  background:#041c34f2;border-radius:22px;
+  padding:38px 42px;box-shadow:0 12px 40px #0003;
+}
+.back{color:#ffc18a;text-decoration:none;font-size:14px}
+h2{font-size:32px;margin:25px 0 10px}
+.subtitle{color:var(--muted);line-height:1.5}
+h3{
+  font-size:16px;color:#e1edf6;
+  border-bottom:1px solid #ffffff25;
+  padding-bottom:12px;margin:28px 0 18px;
+}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{margin-bottom:16px}
+.full{grid-column:1/-1}
+label{display:block;font-size:13px;color:#d9e8f3;margin-bottom:8px}
+input,select,textarea{
+  width:100%;padding:13px 14px;
+  background:#0b3353;color:white;
+  border:1px solid #316182;border-radius:8px;
+  font:14px Arial;
+}
+textarea{resize:vertical;min-height:80px}
+input::placeholder,textarea::placeholder{color:#8faabe}
+input:focus,select:focus,textarea:focus{
+  outline:none;border-color:var(--orange);
+  box-shadow:0 0 0 2px #ff9f3d26;
+}
+select option{background:#092b48}
+.check{
+  display:flex;gap:10px;align-items:flex-start;
+  margin:18px 0;font-size:13px;color:#c6d8e6;
+}
+.check input{width:17px}
+.check label{margin:0;line-height:1.5}
+.submit{
+  width:100%;padding:17px;border:0;border-radius:9px;
+  background:#d97721;color:white;font-size:17px;
+  font-weight:bold;cursor:pointer;
+}
+.submit:hover{background:#f28b2d}
+.message{text-align:center;margin-top:15px;font-size:13px}
+footer{text-align:center;padding:15px;font-size:12px;color:#d1d9e0}
+@media(max-width:1000px){
+  .shell{grid-template-columns:1fr;padding:25px;gap:25px}
+  .identity{gap:25px}
+  .brand h1{font-size:42px}
+  .brand p{font-size:19px}
+  .logo{width:75px;height:75px}
+  .logo svg{width:50px}
+  .slogan{font-size:20px}
+  .panel{padding:26px}
+}
+@media(max-width:500px){
+  .shell{margin:0;padding:15px}
+  .grid{grid-template-columns:1fr}
+  .full{grid-column:auto}
+}
+</style>
+<link href="../scs-global.css" rel="stylesheet"/><link href="../logo-sistema-candango.png" rel="icon" type="image/png"/></head>
+<body>
+<div class="shell">
+<section class="identity">
+<div class="brand">
+<div class="logo scs-identity-logo"><img alt="Logomarca do Sistema Candango de Salvamento" src="../logo-sistema-candango.png"/></div>
+<div>
+<h1 class="scs-identity-name">Sistema Candango de Salvamento</h1>
+<p class="scs-identity-description">Segurança e salvamento no Lago Paranoá</p>
+</div>
+</div>
+<div class="slogan">
+      Mais segurança<br/>para quem aproveita<br/>o Lago Paranoá.
+    </div>
+</section>
+<main class="panel">
+<a class="back" href="../index.html">← Voltar ao início</a>
+<h2>Cadastro de Socorrista</h2>
+<p class="subtitle">
+      Cadastre seus dados profissionais para solicitar acesso
+      ao painel operacional do SCS.
+    </p>
+<form id="form">
+<h3>Dados pessoais</h3>
+<div class="grid">
+<div class="field full">
+<label for="nome">Nome completo *</label>
+<input id="nome" placeholder="Nome completo" required=""/>
+</div>
+<div class="field">
+<label for="cpf">CPF *</label>
+<input id="cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" required=""/>
+</div>
+<div class="field">
+<label for="nascimento">Data de nascimento *</label>
+<input id="nascimento" required="" type="date"/>
+</div>
+<div class="field">
+<label for="email">E-mail profissional *</label>
+<input id="email" placeholder="nome@instituicao.com.br" required="" type="email"/>
+</div>
+<div class="field">
+<label for="telefone">Telefone *</label>
+<input id="telefone" placeholder="(61) 99999-9999" required="" type="tel"/>
+</div>
+</div>
+<h3>Identificação profissional</h3>
+<div class="grid">
+<div class="field">
+<label for="matricula">Matrícula / Registro *</label>
+<input id="matricula" placeholder="Identificação" required=""/>
+</div>
+<div class="field">
+<label for="instituicao">Instituição / Organização *</label>
+<input id="instituicao" placeholder="Ex.: Corpo de Bombeiros" required=""/>
+</div>
+<div class="field">
+<label for="funcao">Função *</label>
+<select id="funcao" required="">
+<option value="">Selecione</option>
+<option>Guarda-vidas</option>
+<option>Socorrista aquático</option>
+<option>Bombeiro militar</option>
+<option>Condutor de embarcação de resgate</option>
+<option>Outro profissional de salvamento</option>
+</select>
+</div>
+<div class="field">
+<label for="experiencia">Experiência profissional</label>
+<select id="experiencia">
+<option>Menos de 1 ano</option>
+<option>1 a 3 anos</option>
+<option>4 a 7 anos</option>
+<option>Mais de 7 anos</option>
+</select>
+</div>
+<div class="field full">
+<label for="qualificacoes">Cursos e certificações</label>
+<textarea id="qualificacoes" placeholder="Ex.: Salvamento aquático, primeiros socorros, APH"></textarea>
+</div>
+</div>
+<h3>Disponibilidade operacional</h3>
+<div class="grid">
+<div class="field">
+<label for="turno">Turno preferencial *</label>
+<select id="turno" required="">
+<option value="">Selecione</option>
+<option>Manhã</option>
+<option>Tarde</option>
+<option>Noite</option>
+<option>Disponibilidade integral</option>
+</select>
+</div>
+<div class="field">
+<label for="regiao">Região de atuação *</label>
+<select id="regiao" required="">
+<option value="">Selecione</option>
+<option>Lago Norte</option>
+<option>Lago Sul</option>
+<option>Ponte JK</option>
+<option>Orla / Região Central</option>
+<option>Toda a região do Lago Paranoá</option>
+</select>
+</div>
+</div>
+<h3>Credenciais de acesso</h3>
+<div class="grid">
+<div class="field">
+<label for="senha">Senha *</label>
+<input id="senha" minlength="8" placeholder="Mínimo 8 caracteres" required="" type="password"/>
+</div>
+<div class="field">
+<label for="confirmar">Confirmar senha *</label>
+<input id="confirmar" placeholder="Repita sua senha" required="" type="password"/>
+</div>
+</div>
+<div class="check">
+<input id="mostrar" type="checkbox"/>
+<label for="mostrar">Mostrar senhas</label>
+</div>
+<div class="check">
+<input id="termos" required="" type="checkbox"/>
+<label for="termos">
+          Declaro que os dados profissionais são verdadeiros
+          e aceito os termos de uso e a política de privacidade.
+        </label>
+</div>
+<button class="submit" type="submit">
+        Solicitar Cadastro de Socorrista
+      </button>
+<div class="message" id="message" role="status"></div>
+</form>
+</main>
+</div>
+<footer>Sistema Candango de Salvamento © 2026 - Sistema Candango de Salvamento</footer>
+<script>
+const form=document.getElementById("form");
+const cpf=document.getElementById("cpf");
+const senha=document.getElementById("senha");
+const confirmar=document.getElementById("confirmar");
+const message=document.getElementById("message");
+
+cpf.addEventListener("input",()=>{
+  let v=cpf.value.replace(/\D/g,"").slice(0,11);
+  v=v.replace(/^(\d{3})(\d)/,"$1.$2")
+     .replace(/^(\d{3})\.(\d{3})(\d)/,"$1.$2.$3")
+     .replace(/(\d{3})(\d{1,2})$/,"$1-$2");
+  cpf.value=v;
+});
+
+document.getElementById("mostrar").addEventListener("change",e=>{
+  senha.type=confirmar.type=e.target.checked?"text":"password";
+});
+
+function cpfValido(valor){
+  const n=valor.replace(/\D/g,"");
+  if(n.length!==11||/^(\d)\1+$/.test(n))return false;
+  for(let t=9;t<11;t++){
+    let soma=0;
+    for(let i=0;i<t;i++)soma+=Number(n[i])*(t+1-i);
+    let dig=(soma*10)%11;
+    if(dig===10)dig=0;
+    if(dig!==Number(n[t]))return false;
+  }
+  return true;
+}
+
+form.addEventListener("submit",e=>{
+  e.preventDefault();
+  message.style.color="#ffb3a8";
+  if(!cpfValido(cpf.value)){
+    message.textContent="Informe um CPF válido.";
+    return;
+  }
+  if(new Date(document.getElementById("nascimento").value)>new Date()){
+    message.textContent="Data de nascimento inválida.";
+    return;
+  }
+  if(senha.value!==confirmar.value){
+    message.textContent="As senhas não coincidem.";
+    return;
+  }
+  message.style.color="#6ee7b7";
+  message.textContent=
+    "Solicitação registrada neste navegador. Aguarde a análise do administrador.";
+  const key="scs_solicitacoes_socorristas_v1";
+  let requests=[];
+  try { requests=JSON.parse(localStorage.getItem(key))||[];if(!Array.isArray(requests))requests=[]; }catch(e){requests=[];}
+  const get=id=>document.getElementById(id)?.value?.trim()||"";
+  const matricula=get("matricula");
+  if(requests.some(r=>r.document===matricula&&r.status==="Pendente")){
+    message.style.color="#ffb3a8";message.textContent="Já existe uma solicitação pendente para esta matrícula.";return;
+  }
+  requests.push({id:Date.now(),name:get("nome")||get("nomeCompleto"),document:matricula,
+    phone:get("telefone"),email:get("email"),region:get("regiao"),shift:get("turno"),
+    qualification:get("qualificacoes")||get("funcao"),institution:get("instituicao"),
+    submittedAt:new Date().toLocaleDateString("pt-BR"),status:"Pendente",reason:"",reviewedAt:""});
+  try{localStorage.setItem(key,JSON.stringify(requests));form.reset();}
+  catch(e){message.style.color="#ffb3a8";message.textContent="Não foi possível salvar neste navegador.";}
+});
+</script>
+</body>
+</html>

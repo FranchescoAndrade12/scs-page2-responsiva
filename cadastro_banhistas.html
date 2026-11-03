@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistema Candango de Salvamento — Cadastro de Banhista</title>
+<style>
+:root {
+  --navy:#041b31;
+  --panel:#041c34f2;
+  --blue:#078bd0;
+  --cyan:#13c4f4;
+  --muted:#aec4d6;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  color:white;
+  background:linear-gradient(#061a2c9c,#061a2cc9),
+             url("fundo-lago.jpg") center/cover fixed;
+  min-height:100vh;
+}
+.shell{
+  min-height:100vh;
+  margin:0 24px;
+  border:1px solid #ffffff35;
+  border-radius:24px;
+  background:#071c2b85;
+  backdrop-filter:blur(9px);
+  display:grid;
+  grid-template-columns:1fr 1.05fr;
+  gap:45px;
+  padding:55px 5%;
+}
+.identity{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.brand{display:flex;gap:28px;align-items:flex-start}
+.logo{
+  width:115px;height:115px;
+  background:white;border-radius:50%;
+  color:#07558f;display:grid;place-items:center;
+  flex-shrink:0;
+}
+.logo svg{width:75px}
+.brand h1{font-size:62px;margin:0 0 12px}
+.brand p{font-size:29px;line-height:1.5;margin:0}
+.slogan{font-size:32px;font-weight:bold;line-height:1.6}
+.slogan:after{
+  content:"";display:block;width:140px;height:4px;
+  background:var(--cyan);margin-top:24px;
+}
+.panel{
+  background:var(--panel);
+  border-radius:22px;
+  padding:38px 42px;
+  box-shadow:0 12px 40px #0003;
+}
+.back{
+  display:inline-block;color:#9ed5f5;
+  text-decoration:none;margin-bottom:24px;font-size:14px;
+}
+h2{font-size:32px;margin:0 0 10px}
+.subtitle{color:var(--muted);margin:0 0 26px}
+h3{
+  color:#d8ebf8;font-size:16px;
+  border-bottom:1px solid #ffffff24;
+  padding-bottom:12px;margin:27px 0 18px;
+}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{margin-bottom:17px}
+.full{grid-column:1/-1}
+label{display:block;font-size:13px;margin-bottom:8px;color:#d9e8f3}
+input,select{
+  width:100%;padding:13px 14px;
+  background:#0b3353;border:1px solid #316182;
+  border-radius:8px;color:white;font-size:14px;
+}
+input::placeholder{color:#8faabe}
+input:focus,select:focus{
+  outline:none;border-color:var(--cyan);
+  box-shadow:0 0 0 2px #13c4f42c;
+}
+select option{background:#092b48}
+.check{
+  display:flex;gap:10px;align-items:flex-start;
+  color:#b9d1e2;font-size:13px;line-height:1.5;
+  margin:20px 0;
+}
+.check input{width:17px;margin-top:2px}
+.check label{margin:0}
+.submit{
+  width:100%;padding:17px;border:0;border-radius:9px;
+  background:var(--blue);color:white;
+  font-size:17px;font-weight:bold;cursor:pointer;
+}
+.submit:hover{background:#05a0e8}
+.helper{text-align:center;color:var(--muted);font-size:13px}
+.helper a{color:#42c8ff}
+.message{margin-top:14px;font-size:13px;text-align:center}
+footer{position:fixed;bottom:10px;left:0;right:0;text-align:center;color:#d1d9e0;font-size:12px}
+@media(max-width:1000px){
+  .shell{grid-template-columns:1fr;padding:25px;gap:20px}
+  .identity{gap:25px}
+  .brand h1{font-size:42px}
+  .brand p{font-size:19px}
+  .logo{width:75px;height:75px}
+  .logo svg{width:50px}
+  .slogan{font-size:20px}
+  .panel{padding:26px}
+  footer{position:static;padding:14px}
+}
+@media(max-width:500px){
+  .shell{margin:0;padding:15px}
+  .grid{grid-template-columns:1fr}
+  .full{grid-column:auto}
+}
+</style>
+<link href="../scs-global.css" rel="stylesheet"/><link href="../logo-sistema-candango.png" rel="icon" type="image/png"/></head>
+<body>
+<div class="shell">
+<section class="identity">
+<div class="brand">
+<div class="logo scs-identity-logo"><img alt="Logomarca do Sistema Candango de Salvamento" src="../logo-sistema-candango.png"/></div>
+<div>
+<h1 class="scs-identity-name">Sistema Candango de Salvamento</h1>
+<p class="scs-identity-description">Segurança e salvamento no Lago Paranoá</p>
+</div>
+</div>
+<div class="slogan">
+      Mais segurança<br/>
+      para quem aproveita<br/>
+      o Lago Paranoá.
+    </div>
+</section>
+<main class="panel">
+<a class="back" href="../index.html">← Voltar ao início</a>
+<h2>Cadastro de Banhista</h2>
+<p class="subtitle">Crie sua conta para acessar o mapa e os recursos de segurança.</p>
+<form id="form">
+<h3>Informações pessoais</h3>
+<div class="grid">
+<div class="field full">
+<label for="nome">Nome completo *</label>
+<input id="nome" placeholder="Seu nome completo" required=""/>
+</div>
+<div class="field">
+<label for="nascimento">Data de nascimento *</label>
+<input id="nascimento" required="" type="date"/>
+</div>
+<div class="field">
+<label for="cpf">CPF *</label>
+<input id="cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" required=""/>
+</div>
+<div class="field">
+<label for="telefone">Telefone *</label>
+<input id="telefone" placeholder="(61) 99999-9999" required="" type="tel"/>
+</div>
+<div class="field">
+<label for="email">E-mail *</label>
+<input id="email" placeholder="exemplo@email.com" required="" type="email"/>
+</div>
+</div>
+<h3>Contato de emergência</h3>
+<div class="grid">
+<div class="field">
+<label for="contato">Nome do contato</label>
+<input id="contato" placeholder="Pessoa de confiança"/>
+</div>
+<div class="field">
+<label for="telefoneEmergencia">Telefone de emergência</label>
+<input id="telefoneEmergencia" placeholder="(61) 99999-9999" type="tel"/>
+</div>
+</div>
+<h3>Dados de acesso</h3>
+<div class="grid">
+<div class="field">
+<label for="senha">Senha *</label>
+<input id="senha" minlength="8" placeholder="Mínimo de 8 caracteres" required="" type="password"/>
+</div>
+<div class="field">
+<label for="confirmar">Confirmar senha *</label>
+<input id="confirmar" placeholder="Repita sua senha" required="" type="password"/>
+</div>
+</div>
+<div class="check">
+<input id="mostrar" type="checkbox"/>
+<label for="mostrar">Mostrar senhas</label>
+</div>
+<div class="check">
+<input id="termos" required="" type="checkbox"/>
+<label for="termos">
+          Concordo com os termos de uso e com o tratamento
+          dos dados conforme a política de privacidade.
+        </label>
+</div>
+<button class="submit" type="submit">Criar minha conta</button>
+<p class="helper">Já possui conta? <a href="../index.html">Entrar</a></p>
+<div class="message" id="message" role="status"></div>
+</form>
+</main>
+</div>
+<footer>Sistema Candango de Salvamento © 2026 - Sistema Candango de Salvamento</footer>
+<script>
+const form=document.getElementById("form");
+const cpf=document.getElementById("cpf");
+const mostrar=document.getElementById("mostrar");
+const senha=document.getElementById("senha");
+const confirmar=document.getElementById("confirmar");
+const message=document.getElementById("message");
+
+cpf.addEventListener("input",()=>{
+  let v=cpf.value.replace(/\D/g,"").slice(0,11);
+  v=v.replace(/^(\d{3})(\d)/,"$1.$2")
+     .replace(/^(\d{3})\.(\d{3})(\d)/,"$1.$2.$3")
+     .replace(/(\d{3})(\d{1,2})$/,"$1-$2");
+  cpf.value=v;
+});
+
+mostrar.addEventListener("change",()=>{
+  senha.type=confirmar.type=mostrar.checked?"text":"password";
+});
+
+function cpfValido(valor){
+  const n=valor.replace(/\D/g,"");
+  if(n.length!==11||/^(\d)\1+$/.test(n))return false;
+  for(let t=9;t<11;t++){
+    let soma=0;
+    for(let i=0;i<t;i++)soma+=Number(n[i])*(t+1-i);
+    let dig=(soma*10)%11;
+    if(dig===10)dig=0;
+    if(dig!==Number(n[t]))return false;
+  }
+  return true;
+}
+
+form.addEventListener("submit",e=>{
+  e.preventDefault();
+  message.style.color="#ffb3a8";
+  if(!cpfValido(cpf.value)){
+    message.textContent="Informe um CPF válido.";
+    return;
+  }
+  if(senha.value!==confirmar.value){
+    message.textContent="As senhas não coincidem.";
+    return;
+  }
+  if(new Date(document.getElementById("nascimento").value)>new Date()){
+    message.textContent="Data de nascimento inválida.";
+    return;
+  }
+  message.style.color="#6ee7b7";
+  message.textContent=
+    "Formulário validado! A conta ainda precisa ser criada no servidor.";
+});
+</script>
+</body>
+</html>

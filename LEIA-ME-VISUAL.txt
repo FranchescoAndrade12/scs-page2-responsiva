@@ -1,0 +1,5 @@
+SCS - Cabeçalhos e ícones de usuário padronizados
+
+Todos os cabeçalhos das páginas internas com header.topbar usam agora a mesma estrutura visual, com o perfil correto de cada pasta. O avatar usa o mesmo SVG em todas as telas e o CSS compartilhado define dimensões, fontes e cores. As páginas de formulário sem cabeçalho não receberam um cabeçalho artificial.
+
+Ajustes visuais estruturais; teste manual em navegador ainda recomendado.

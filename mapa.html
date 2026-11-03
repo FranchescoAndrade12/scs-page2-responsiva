@@ -1,0 +1,595 @@
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistema Candango de Salvamento — Mapa do Banhista</title>
+<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+<style>
+:root{
+  --navy:#05213b;
+  --navy2:#082b4d;
+  --blue:#10558f;
+  --panel:#0a355d;
+  --cyan:#1abaf0;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--navy);
+  font-family:Arial,Helvetica,sans-serif;
+  color:white;
+}
+.app{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+.topbar{
+  height:89px;
+  flex-shrink:0;
+  background:#05213b;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 25px;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+.logo{
+  width:55px;height:55px;
+  border-radius:50%;
+  background:white;
+  display:grid;
+  place-items:center;
+}
+.logo svg{width:39px}
+.brand strong{font-size:30px}
+.role{
+  border-left:1px solid #47718d;
+  padding-left:20px;
+  font-size:20px;
+}
+.user{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  font-size:16px;
+}
+.user-icon{
+  border:2px solid #b4d6e8;
+  border-radius:50%;
+  width:48px;height:48px;
+  display:grid;place-items:center;
+  font-size:24px;
+}
+.layout{
+  display:flex;
+  flex:1;
+  min-height:calc(100vh - 89px);
+}
+.sidebar{
+  width:253px;
+  min-width:253px;
+  background:#06233f;
+  padding-top:28px;
+}
+.menu{
+  display:flex;
+  align-items:center;
+  gap:25px;
+  width:100%;
+  padding:26px 30px;
+  color:#e9f4ff;
+  text-decoration:none;
+  font-size:19px;
+  border:none;
+  background:transparent;
+  text-align:left;
+  cursor:pointer;
+}
+.menu:hover{background:#103e67}
+.menu.active{
+  background:#14548d;
+  font-weight:bold;
+}
+.menu .symbol{
+  width:22px;
+  text-align:center;
+  font-size:23px;
+}
+.content{
+  flex:1;
+  min-width:0;
+  padding:0;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 350px;
+  gap:22px;
+}
+.map-container{
+  position:relative;
+  min-height:calc(100vh - 89px);
+  background:#092c42;
+}
+#map{
+  width:100%;
+  height:100%;
+  min-height:650px;
+  z-index:1;
+}
+.map-switch{
+  position:absolute;
+  top:28px;
+  right:28px;
+  z-index:500;
+  background:white;
+  padding:5px;
+  border-radius:11px;
+  display:flex;
+  gap:3px;
+  box-shadow:0 3px 12px #0004;
+}
+.map-switch button{
+  border:0;
+  padding:14px 24px;
+  background:white;
+  color:#365a77;
+  border-radius:7px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.map-switch button.active{
+  background:#10558f;
+  color:white;
+}
+.right-panel{
+  padding:23px 20px 25px 0;
+  display:flex;
+  flex-direction:column;
+  gap:20px;
+}
+.card{
+  background:#0a355d;
+  border-radius:18px;
+  padding:25px;
+}
+.card h2{
+  font-size:26px;
+  margin:5px 0 27px;
+}
+.location-status{
+  font-size:19px;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+.location-details{
+  color:#b9dcf5;
+  line-height:1.5;
+  font-size:15px;
+  margin-bottom:20px;
+}
+.btn-location{
+  width:100%;
+  padding:16px 10px;
+  border:1px solid #5d9bc4;
+  border-radius:10px;
+  background:#11517f;
+  color:white;
+  font-size:15px;
+  cursor:pointer;
+}
+.btn-location:hover{background:#17669f}
+.legend{
+  display:flex;
+  flex-direction:column;
+  gap:26px;
+  padding-top:32px;
+  padding-bottom:35px;
+}
+.legend-item{
+  display:flex;
+  align-items:center;
+  gap:20px;
+  font-size:16px;
+}
+.legend-symbol{
+  width:32px;
+  text-align:center;
+  font-size:25px;
+}
+.green{color:#00c88a}
+.red{color:#ff4343}
+.yellow{color:#ffb52b}
+.blue{color:#48a9ff}
+.note{
+  color:#a9c8de;
+  font-size:13px;
+  line-height:1.5;
+}
+.custom-marker{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:36px;height:46px;
+}
+.pin{
+  position:relative;
+  width:35px;height:35px;
+  border:3px solid white;
+  border-radius:50% 50% 50% 0;
+  transform:rotate(-45deg);
+  box-shadow:0 2px 7px #0007;
+}
+.pin span{
+  position:absolute;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%) rotate(45deg);
+  color:white;
+  font-size:20px;
+  font-weight:bold;
+}
+.leaflet-container{font-family:Arial,sans-serif}
+@media(max-width:1100px){
+  .sidebar{width:190px;min-width:190px}
+  .menu{padding:22px 16px;gap:15px;font-size:16px}
+  .content{grid-template-columns:minmax(0,1fr) 290px;gap:12px}
+  .right-panel{padding-right:12px}
+  .card{padding:18px}
+}
+@media(max-width:800px){
+  .layout{flex-direction:column}
+  .sidebar{
+    width:100%;min-width:0;
+    display:flex;padding:0;
+    overflow-x:auto;
+  }
+  .menu{
+    justify-content:center;
+    white-space:nowrap;
+    padding:17px 20px;
+    width:auto;
+  }
+  .content{grid-template-columns:1fr}
+  .map-container{height:65vh;min-height:400px}
+  #map{min-height:400px}
+  .right-panel{padding:15px}
+  .topbar{height:75px}
+  .brand strong{font-size:23px}
+  .role{font-size:15px}
+  .user{font-size:13px}
+}
+@media(max-width:480px){
+  .topbar{padding:0 12px}
+  .logo{width:40px;height:40px}
+  .logo svg{width:30px}
+  .brand{gap:9px}
+  .brand strong{font-size:20px}
+  .role{padding-left:9px}
+  .user-icon{width:35px;height:35px;font-size:17px}
+  .user span{display:none}
+  .map-switch{top:12px;right:12px}
+  .map-switch button{padding:10px 15px;font-size:13px}
+}
+</style>
+<link href="../scs-global.css" rel="stylesheet"/><link href="../logo-sistema-candango.png" rel="icon" type="image/png"/></head>
+<body>
+<div class="app">
+<!-- CABEÇALHO -->
+<header class="topbar scs-unified-header"><div class="scs-header-brand"><div aria-hidden="true" class="scs-header-logo"><img alt="Logomarca do Sistema Candango de Salvamento" src="../logo-sistema-candango.png"/></div><strong class="scs-header-title">Sistema Candango de Salvamento</strong><span class="scs-header-role">Socorrista</span></div><div class="scs-header-user"><span class="scs-header-avatar"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></svg></span><span class="scs-header-username">Socorrista</span></div></header>
+<div class="layout">
+<!-- MENU LATERAL -->
+<aside class="sidebar"><a class="menu" href="ocorrencias.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 10 9-7 9 7"></path><path d="M5 9v12h14V9"></path><path d="M9 21v-7h6v7"></path></svg></span><span class="menu-label">Início</span></a><a class="menu" href="ocorrencias.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect height="16" rx="2" width="16" x="4" y="4"></rect><path d="M8 9h8M8 13h8M8 17h5"></path></svg></span><span class="menu-label">Ocorrências</span></a><a class="menu active" href="mapa.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"></path></svg></span><span class="menu-label">Mapa</span></a><a class="menu" href="escalas.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect height="16" rx="2" width="18" x="3" y="5"></rect><path d="M7 3v4M17 3v4M3 10h18M7 14h3M14 14h3"></path></svg></span><span class="menu-label">Escala de Plantão</span></a><a class="menu" href="editar_socorrista.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></svg></span><span class="menu-label">Perfil</span></a><a class="menu" href="../index.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 17l5-5-5-5M15 12H3"></path><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"></path></svg></span><span class="menu-label">Sair</span></a></aside>
+<!-- CONTEÚDO -->
+<main class="content">
+<div class="map-container">
+<div aria-label="Mapa interativo do Lago Paranoá" id="map"></div>
+<!-- ALTERNAR CAMADA -->
+<div class="map-switch">
+<button id="btnStreet" onclick="changeLayer('street')">
+            Mapa
+          </button>
+<button class="active" id="btnSatellite" onclick="changeLayer('satellite')">
+            Satélite
+          </button>
+</div>
+</div>
+<!-- PAINEL DIREITO -->
+<aside class="right-panel">
+<section class="card">
+<h2>Sua Localização</h2>
+<div class="location-status" id="locationStatus">
+            Aguardando localização
+          </div>
+<div class="location-details" id="locationDetails">
+            Permita o acesso à localização para visualizar sua
+            posição no mapa.
+          </div>
+<button class="btn-location" onclick="updateLocation()">
+            ◎ Atualizar localização
+          </button>
+</section>
+<section class="card legend">
+<div class="legend-item">
+<span class="legend-symbol green">📍</span>
+<span>Ponto de Salvamento</span>
+</div>
+<div class="legend-item">
+<span class="legend-symbol red">▲</span>
+<span>Zona de Risco</span>
+</div>
+<div class="legend-item">
+<span class="legend-symbol yellow">⚠</span>
+<span>Ocorrência</span>
+</div>
+<div class="legend-item">
+<span class="legend-symbol blue">●</span>
+<span>Sua Localização</span>
+</div>
+<p class="note">
+            Os marcadores de salvamento, risco e ocorrências
+            são ilustrativos nesta versão do sistema.
+          </p>
+</section>
+</aside>
+</main>
+</div>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+/* ==========================================
+   MAPA DO LAGO PARANOÁ
+========================================== */
+
+const lakeCenter = [-15.7905, -47.8355];
+
+const map = L.map("map", {
+  center: lakeCenter,
+  zoom: 12,
+  zoomControl: true
+});
+
+/* CAMADAS */
+
+const streetLayer = L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  {
+    attribution: '&copy; OpenStreetMap contributors',
+    maxZoom: 19
+  }
+);
+
+const satelliteLayer = L.tileLayer(
+  "https://server.arcgisonline.com/ArcGIS/rest/services/" +
+  "World_Imagery/MapServer/tile/{z}/{y}/{x}",
+  {
+    attribution: "Imagens &copy; Esri",
+    maxZoom: 19
+  }
+);
+
+satelliteLayer.addTo(map);
+
+function changeLayer(type) {
+  map.removeLayer(streetLayer);
+  map.removeLayer(satelliteLayer);
+
+  if (type === "street") {
+    streetLayer.addTo(map);
+  } else {
+    satelliteLayer.addTo(map);
+  }
+
+  document.getElementById("btnStreet")
+    .classList.toggle("active", type === "street");
+
+  document.getElementById("btnSatellite")
+    .classList.toggle("active", type === "satellite");
+}
+
+/* ==========================================
+   ÍCONES
+========================================== */
+
+function createPin(color, symbol) {
+  return L.divIcon({
+    className: "custom-marker",
+    html: `
+      <div class="pin" style="background:${color}">
+        <span>${symbol}</span>
+      </div>
+    `,
+    iconSize: [36, 46],
+    iconAnchor: [18, 43],
+    popupAnchor: [0, -38]
+  });
+}
+
+const rescueIcon = createPin("#00a878", "●");
+const riskIcon = createPin("#ef3939", "!");
+const incidentIcon = createPin("#f5a623", "!");
+
+/* ==========================================
+   MARCADORES DEMONSTRATIVOS
+   Não representam dados operacionais reais.
+========================================== */
+
+const rescuePoints = [
+  {
+    name: "Ponto de Salvamento A",
+    coords: [-15.785, -47.867]
+  },
+  {
+    name: "Ponto de Salvamento B",
+    coords: [-15.815, -47.821]
+  }
+];
+
+const riskZones = [
+  {
+    name: "Zona de Risco A",
+    coords: [-15.769, -47.837]
+  },
+  {
+    name: "Zona de Risco B",
+    coords: [-15.801, -47.859]
+  },
+  {
+    name: "Zona de Risco C",
+    coords: [-15.811, -47.826]
+  }
+];
+
+const incidents = [
+  {
+    name: "Ocorrência A",
+    coords: [-15.784, -47.827]
+  },
+  {
+    name: "Ocorrência B",
+    coords: [-15.804, -47.846]
+  }
+];
+
+rescuePoints.forEach(point => {
+  L.marker(point.coords, {icon: rescueIcon})
+    .addTo(map)
+    .bindPopup(
+      `<strong>${point.name}</strong><br>
+       Posição ilustrativa para demonstração.`
+    );
+});
+
+riskZones.forEach(point => {
+  L.marker(point.coords, {icon: riskIcon})
+    .addTo(map)
+    .bindPopup(
+      `<strong>${point.name}</strong><br>
+       Zona ilustrativa, não validada.`
+    );
+});
+
+incidents.forEach(point => {
+  L.marker(point.coords, {icon: incidentIcon})
+    .addTo(map)
+    .bindPopup(
+      `<strong>${point.name}</strong><br>
+       Ocorrência fictícia para testes.`
+    );
+});
+
+/* ==========================================
+   LOCALIZAÇÃO DO BANHISTA
+========================================== */
+
+let userMarker = null;
+let accuracyCircle = null;
+
+function updateLocation() {
+
+  const status = document.getElementById("locationStatus");
+  const details = document.getElementById("locationDetails");
+
+  if (!navigator.geolocation) {
+    status.textContent = "Localização indisponível";
+    details.textContent =
+      "Este navegador não suporta geolocalização.";
+    return;
+  }
+
+  status.textContent = "Obtendo localização...";
+  details.textContent = "Aguarde a resposta do navegador.";
+
+  navigator.geolocation.getCurrentPosition(
+
+    position => {
+
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      const accuracy = position.coords.accuracy;
+
+      status.textContent = "Localização encontrada";
+
+      details.innerHTML = `
+        <strong>Coordenadas:</strong><br>
+        ${lat.toFixed(6)}, ${lng.toFixed(6)}<br>
+        <strong>Precisão estimada:</strong>
+        ${Math.round(accuracy)} metros
+      `;
+
+      if (userMarker) {
+        map.removeLayer(userMarker);
+      }
+
+      if (accuracyCircle) {
+        map.removeLayer(accuracyCircle);
+      }
+
+      userMarker = L.circleMarker([lat, lng], {
+        radius: 10,
+        color: "#ffffff",
+        weight: 4,
+        fillColor: "#1689ff",
+        fillOpacity: 1
+      }).addTo(map);
+
+      userMarker.bindPopup(
+        "<strong>Sua localização atual</strong>"
+      );
+
+      accuracyCircle = L.circle([lat, lng], {
+        radius: accuracy,
+        color: "#1689ff",
+        fillColor: "#1689ff",
+        fillOpacity: 0.12,
+        weight: 2
+      }).addTo(map);
+
+      map.setView([lat, lng], 15);
+
+    },
+
+    error => {
+
+      status.textContent = "Localização indisponível";
+
+      if (error.code === 1) {
+        details.textContent =
+          "Permissão negada. Autorize o acesso à localização nas configurações do navegador.";
+      } else if (error.code === 2) {
+        details.textContent =
+          "Não foi possível determinar sua posição.";
+      } else {
+        details.textContent =
+          "Tempo esgotado. Tente atualizar novamente.";
+      }
+
+    },
+
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    }
+
+  );
+
+}
+
+/* ==========================================
+   INICIALIZAÇÃO
+========================================== */
+
+window.addEventListener("load", () => {
+  map.invalidateSize();
+  updateLocation();
+});
+
+</script>
+</body>
+</html>

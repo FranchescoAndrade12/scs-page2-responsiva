@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistema Candango de Salvamento — Cadastro de Administrador</title>
+<style>
+:root{
+  --blue:#0aa5e8;
+  --cyan:#13c4f4;
+  --muted:#aec4d6;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;
+  font-family:Arial,Helvetica,sans-serif;color:white;
+  background:linear-gradient(#061a2ca6,#061a2cce),
+  url("fundo-lago.jpg") center/cover fixed;
+}
+.shell{
+  margin:0 24px;min-height:100vh;
+  display:grid;grid-template-columns:1fr 1.05fr;
+  gap:45px;padding:55px 5%;
+  border:1px solid #ffffff35;border-radius:24px;
+  background:#071c2b85;backdrop-filter:blur(9px);
+}
+.identity{display:flex;flex-direction:column;justify-content:space-between}
+.brand{display:flex;gap:28px;align-items:flex-start}
+.logo{
+  width:115px;height:115px;flex-shrink:0;
+  background:white;border-radius:50%;
+  display:grid;place-items:center;
+}
+.logo svg{width:75px}
+.brand h1{font-size:62px;margin:0 0 12px}
+.brand p{font-size:29px;line-height:1.5;margin:0}
+.slogan{font-size:32px;font-weight:bold;line-height:1.6}
+.slogan:after{
+  content:"";display:block;width:140px;height:4px;
+  background:var(--cyan);margin-top:24px;
+}
+.panel{
+  background:#041c34f2;border-radius:22px;
+  padding:38px 42px;box-shadow:0 12px 40px #0003;
+}
+.back{color:#9ed5f5;text-decoration:none;font-size:14px}
+h2{font-size:32px;margin:25px 0 10px}
+.subtitle{color:var(--muted);line-height:1.5}
+h3{
+  font-size:16px;color:#e1edf6;
+  border-bottom:1px solid #ffffff25;
+  padding-bottom:12px;margin:28px 0 18px;
+}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{margin-bottom:16px}
+.full{grid-column:1/-1}
+label{display:block;font-size:13px;color:#d9e8f3;margin-bottom:8px}
+input,select{
+  width:100%;padding:13px 14px;
+  background:#0b3353;color:white;
+  border:1px solid #316182;border-radius:8px;
+  font:14px Arial;
+}
+input::placeholder{color:#8faabe}
+input:focus,select:focus{
+  outline:none;border-color:var(--cyan);
+  box-shadow:0 0 0 2px #13c4f426;
+}
+select option{background:#092b48}
+.notice{
+  margin-top:22px;padding:16px;
+  border:1px solid #1474a4;
+  border-radius:9px;background:#0b42657d;
+  color:#cce7f8;font-size:13px;line-height:1.6;
+}
+.check{
+  display:flex;gap:10px;align-items:flex-start;
+  margin:18px 0;font-size:13px;color:#c6d8e6;
+}
+.check input{width:17px}
+.check label{margin:0;line-height:1.5}
+.submit{
+  width:100%;padding:17px;border:0;border-radius:9px;
+  background:#078bd0;color:white;font-size:17px;
+  font-weight:bold;cursor:pointer;
+}
+.submit:hover{background:#0aa5e8}
+.message{text-align:center;margin-top:15px;font-size:13px}
+footer{text-align:center;padding:15px;font-size:12px;color:#d1d9e0}
+@media(max-width:1000px){
+  .shell{grid-template-columns:1fr;padding:25px;gap:25px}
+  .identity{gap:25px}
+  .brand h1{font-size:42px}
+  .brand p{font-size:19px}
+  .logo{width:75px;height:75px}
+  .logo svg{width:50px}
+  .slogan{font-size:20px}
+  .panel{padding:26px}
+}
+@media(max-width:500px){
+  .shell{margin:0;padding:15px}
+  .grid{grid-template-columns:1fr}
+  .full{grid-column:auto}
+}
+</style>
+<link href="../scs-global.css" rel="stylesheet"/><link href="../logo-sistema-candango.png" rel="icon" type="image/png"/></head>
+<body>
+<div class="shell">
+<section class="identity">
+<div class="brand">
+<div class="logo scs-identity-logo"><img alt="Logomarca do Sistema Candango de Salvamento" src="../logo-sistema-candango.png"/></div>
+<div>
+<h1 class="scs-identity-name">Sistema Candango de Salvamento</h1>
+<p class="scs-identity-description">Segurança e salvamento no Lago Paranoá</p>
+</div>
+</div>
+<div class="slogan">
+      Mais segurança<br/>para quem aproveita<br/>o Lago Paranoá.
+    </div>
+</section>
+<main class="panel">
+<a class="back" href="../index.html">← Voltar ao início</a>
+<h2>Cadastro de Administrador</h2>
+<p class="subtitle">
+      Solicite suas credenciais para administrar o Sistema
+      de Controle e Salvamento do Lago Paranoá.
+    </p>
+<form id="form">
+<h3>Informações pessoais</h3>
+<div class="grid">
+<div class="field full">
+<label for="nome">Nome completo *</label>
+<input id="nome" placeholder="Nome completo" required=""/>
+</div>
+<div class="field">
+<label for="cpf">CPF *</label>
+<input id="cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" required=""/>
+</div>
+<div class="field">
+<label for="telefone">Telefone institucional *</label>
+<input id="telefone" placeholder="(61) 99999-9999" required="" type="tel"/>
+</div>
+<div class="field full">
+<label for="email">E-mail institucional *</label>
+<input id="email" placeholder="administrador@instituicao.com.br" required="" type="email"/>
+</div>
+</div>
+<h3>Vínculo institucional</h3>
+<div class="grid">
+<div class="field">
+<label for="instituicao">Instituição *</label>
+<input id="instituicao" placeholder="Órgão ou instituição" required=""/>
+</div>
+<div class="field">
+<label for="matricula">Matrícula funcional *</label>
+<input id="matricula" placeholder="Número de identificação" required=""/>
+</div>
+<div class="field">
+<label for="cargo">Cargo / Função *</label>
+<input id="cargo" placeholder="Ex.: Coordenador operacional" required=""/>
+</div>
+<div class="field">
+<label for="setor">Setor *</label>
+<input id="setor" placeholder="Ex.: Gestão de salvamento" required=""/>
+</div>
+</div>
+<h3>Credenciais de acesso</h3>
+<div class="grid">
+<div class="field">
+<label for="senha">Senha *</label>
+<input id="senha" minlength="12" placeholder="Mínimo 12 caracteres" required="" type="password"/>
+</div>
+<div class="field">
+<label for="confirmar">Confirmar senha *</label>
+<input id="confirmar" placeholder="Repita sua senha" required="" type="password"/>
+</div>
+<div class="field full">
+<label for="codigo">Código de convite institucional *</label>
+<input id="codigo" placeholder="Código fornecido pela administração" required=""/>
+</div>
+</div>
+<div class="notice">
+<strong>Controle de acesso</strong>
+<p>
+          O cadastro de administradores exige validação
+          institucional. O código de convite deverá ser
+          verificado no servidor e o acesso só poderá ser
+          liberado após autorização.
+        </p>
+</div>
+<div class="check">
+<input id="mostrar" type="checkbox"/>
+<label for="mostrar">Mostrar senhas</label>
+</div>
+<div class="check">
+<input id="termos" required="" type="checkbox"/>
+<label for="termos">
+          Declaro possuir autorização institucional e
+          concordo com os termos de uso e a política
+          de privacidade.
+        </label>
+</div>
+<button class="submit" type="submit">
+        Solicitar Acesso Administrativo
+      </button>
+<div class="message" id="message" role="status"></div>
+</form>
+</main>
+</div>
+<footer>Sistema Candango de Salvamento © 2026 - Sistema Candango de Salvamento</footer>
+<script>
+const form=document.getElementById("form");
+const cpf=document.getElementById("cpf");
+const senha=document.getElementById("senha");
+const confirmar=document.getElementById("confirmar");
+const message=document.getElementById("message");
+
+cpf.addEventListener("input",()=>{
+  let v=cpf.value.replace(/\D/g,"").slice(0,11);
+  v=v.replace(/^(\d{3})(\d)/,"$1.$2")
+     .replace(/^(\d{3})\.(\d{3})(\d)/,"$1.$2.$3")
+     .replace(/(\d{3})(\d{1,2})$/,"$1-$2");
+  cpf.value=v;
+});
+
+document.getElementById("mostrar").addEventListener("change",e=>{
+  senha.type=confirmar.type=e.target.checked?"text":"password";
+});
+
+function cpfValido(valor){
+  const n=valor.replace(/\D/g,"");
+  if(n.length!==11||/^(\d)\1+$/.test(n))return false;
+  for(let t=9;t<11;t++){
+    let soma=0;
+    for(let i=0;i<t;i++)soma+=Number(n[i])*(t+1-i);
+    let dig=(soma*10)%11;
+    if(dig===10)dig=0;
+    if(dig!==Number(n[t]))return false;
+  }
+  return true;
+}
+
+form.addEventListener("submit",e=>{
+  e.preventDefault();
+  message.style.color="#ffb3a8";
+  if(!cpfValido(cpf.value)){
+    message.textContent="Informe um CPF válido.";
+    return;
+  }
+  if(senha.value!==confirmar.value){
+    message.textContent="As senhas não coincidem.";
+    return;
+  }
+  if(!/[A-Z]/.test(senha.value) ||
+     !/[a-z]/.test(senha.value) ||
+     !/\d/.test(senha.value) ||
+     !/[^A-Za-z0-9]/.test(senha.value)){
+    message.textContent=
+      "A senha deve conter maiúscula, minúscula, número e símbolo.";
+    return;
+  }
+  message.style.color="#6ee7b7";
+  message.textContent=
+    "Formulário validado. A autorização administrativa depende de verificação no servidor.";
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1033 @@
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistema Candango de Salvamento — Zonas de Risco</title>
+<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #041b30;
+    color: #20384d;
+}
+
+button, input, select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* ESTRUTURA */
+
+.app {
+    min-height: 100vh;
+    border: 2px solid #0a6eac;
+    border-radius: 11px;
+    overflow: hidden;
+    background: #f8fbfd;
+}
+
+.topbar {
+    height: 65px;
+    background: #052442;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: white;
+    color: #07518a;
+    display: grid;
+    place-items: center;
+    font-size: 27px;
+    font-weight: bold;
+}
+
+.brand h1 {
+    font-size: 24px;
+}
+
+.profile-label {
+    border-left: 1px solid #42627c;
+    padding-left: 18px;
+    font-size: 14px;
+    color: #c7d8e6;
+}
+
+.more-button {
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 25px;
+}
+
+.layout {
+    display: flex;
+    min-height: calc(100vh - 65px);
+}
+
+/* MENU LATERAL */
+
+.sidebar {
+    width: 205px;
+    min-width: 205px;
+    background: #052442;
+    padding-top: 15px;
+}
+
+.menu-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 15px 17px;
+    background: transparent;
+    color: #d2e1ee;
+    border: none;
+    border-left: 4px solid transparent;
+    text-align: left;
+    font-size: 13px;
+    transition: .2s;
+}
+
+.menu-item:hover {
+    background: #0b416f;
+}
+
+.menu-item.active {
+    background: #10518a;
+    border-left-color: #31b5ed;
+    color: white;
+    font-weight: bold;
+}
+
+.menu-icon {
+    width: 24px;
+    text-align: center;
+    font-size: 19px;
+}
+
+/* CONTEÚDO */
+
+.main {
+    flex: 1;
+    min-width: 0;
+    padding: 20px;
+    background: #f8fbfd;
+}
+
+.content-grid {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+/* TABELA */
+
+.table-section {
+    min-width: 0;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    font-size: 23px;
+    color: #193b56;
+}
+
+.primary-button {
+    border: none;
+    border-radius: 7px;
+    background: #063c6c;
+    color: white;
+    padding: 13px 20px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.primary-button:hover {
+    background: #075c9a;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    background: white;
+    border: 1px solid #dce6ee;
+    border-radius: 9px;
+}
+
+.risk-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.risk-table th {
+    text-align: left;
+    padding: 17px 13px;
+    background: #f4f7fa;
+    color: #344d60;
+    border-bottom: 1px solid #dce6ee;
+}
+
+.risk-table td {
+    padding: 19px 13px;
+    border-bottom: 1px solid #e5edf3;
+}
+
+.risk-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.risk-table tbody tr:hover {
+    background: #f5faff;
+}
+
+.risk-level {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: bold;
+}
+
+.risk-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.risk-level.high {
+    color: #e32c37;
+}
+
+.risk-level.medium {
+    color: #e7a21e;
+}
+
+.risk-level.low {
+    color: #11966e;
+}
+
+.risk-level.high .risk-dot {
+    background: #e32c37;
+}
+
+.risk-level.medium .risk-dot {
+    background: #e7a21e;
+}
+
+.risk-level.low .risk-dot {
+    background: #11966e;
+}
+
+.zone-status {
+    color: #15976e;
+    font-weight: bold;
+}
+
+.zone-status.inactive {
+    color: #8292a0;
+}
+
+.table-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.icon-button {
+    border: none;
+    background: transparent;
+    color: #31688e;
+    font-size: 19px;
+    padding: 5px;
+}
+
+.icon-button:hover {
+    color: #0580c2;
+}
+
+/* MAPA */
+
+.map-section {
+    position: relative;
+    min-width: 0;
+}
+
+#map {
+    height: 510px;
+    width: 100%;
+    border-radius: 9px;
+    border: 1px solid #d9e5ed;
+    background: #0b465c;
+}
+
+.map-legend {
+    position: absolute;
+    bottom: 22px;
+    left: 15px;
+    z-index: 500;
+    background: white;
+    padding: 13px 15px;
+    border-radius: 7px;
+    box-shadow: 0 2px 12px #0003;
+    font-size: 13px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 7px 0;
+}
+
+.legend-color {
+    width: 15px;
+    height: 15px;
+    border-radius: 4px;
+    background: #ef4b4b;
+}
+
+.legend-color.green {
+    background: #0ba875;
+    border-radius: 50%;
+}
+
+/* MODAL */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: #00182ebf;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 15px;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal {
+    width: 100%;
+    max-width: 520px;
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 10px 35px #0004;
+}
+
+.modal h2 {
+    margin-bottom: 20px;
+    color: #173e5f;
+}
+
+.form-group {
+    margin-bottom: 17px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd9e4;
+    border-radius: 7px;
+    color: #28475e;
+    background: white;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.cancel-button,
+.save-button {
+    padding: 12px 18px;
+    border-radius: 7px;
+    font-weight: bold;
+    border: 1px solid #7ba4c3;
+}
+
+.cancel-button {
+    background: white;
+    color: #28628d;
+}
+
+.save-button {
+    background: #07528c;
+    color: white;
+    border-color: #07528c;
+}
+
+/* NOTIFICAÇÃO */
+
+.toast {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    background: #08775c;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px #0004;
+    display: none;
+    z-index: 3000;
+}
+
+/* RESPONSIVIDADE */
+
+@media(max-width: 1100px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #map {
+        height: 450px;
+    }
+}
+
+@media(max-width: 700px) {
+    .sidebar {
+        width: 65px;
+        min-width: 65px;
+    }
+
+    .menu-item {
+        justify-content: center;
+        padding: 15px 5px;
+    }
+
+    .menu-label {
+        display: none;
+    }
+
+    .main {
+        padding: 15px;
+    }
+
+    .section-header h2 {
+        font-size: 19px;
+    }
+
+    .primary-button {
+        padding: 11px;
+        font-size: 12px;
+    }
+}
+
+@media(max-width: 480px) {
+    .layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-width: 100%;
+        display: flex;
+        overflow-x: auto;
+        padding: 0;
+    }
+
+    .menu-item {
+        min-width: 50px;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+    }
+
+    .menu-item.active {
+        border-left: none;
+        border-bottom-color: #31b5ed;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+<link href="../scs-global.css" rel="stylesheet"/><link href="../logo-sistema-candango.png" rel="icon" type="image/png"/></head>
+<body>
+<div class="app">
+<!-- CABEÇALHO -->
+<header class="topbar scs-unified-header"><div class="scs-header-brand"><div aria-hidden="true" class="scs-header-logo"><img alt="Logomarca do Sistema Candango de Salvamento" src="../logo-sistema-candango.png"/></div><strong class="scs-header-title">Sistema Candango de Salvamento</strong><span class="scs-header-role">Banhista</span></div><div class="scs-header-user"><span class="scs-header-avatar"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></svg></span><span class="scs-header-username">Banhista</span></div></header>
+<div class="layout">
+<!-- MENU LATERAL -->
+<nav class="sidebar"><a class="menu-item" href="mapa_botao_panico.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 10 9-7 9 7"></path><path d="M5 9v12h14V9"></path><path d="M9 21v-7h6v7"></path></svg></span><span class="menu-label">Início</span></a><a class="menu-item" href="mapa_banhista.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"></path></svg></span><span class="menu-label">Mapa</span></a><a class="menu-item" href="editar_banhista.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></svg></span><span class="menu-label">Meu Perfil</span></a><a class="menu-item" href="../index.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 17l5-5-5-5M15 12H3"></path><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"></path></svg></span><span class="menu-label">Sair</span></a></nav>
+<!-- CONTEÚDO -->
+<main class="main">
+<div class="content-grid">
+<!-- TABELA DE ZONAS -->
+<section class="table-section">
+<div class="section-header">
+<h2>Zonas de Risco</h2>
+<button class="primary-button" onclick="openZoneModal()">
+                            + Nova Zona
+                        </button>
+</div>
+<div class="table-wrapper">
+<table class="risk-table">
+<thead>
+<tr>
+<th>Nome</th>
+<th>Nível de Risco</th>
+<th>Status</th>
+<th>Ações</th>
+</tr>
+</thead>
+<tbody id="zonesTable"></tbody>
+</table>
+</div>
+</section>
+<!-- MAPA -->
+<section class="map-section">
+<div id="map"></div>
+<div class="map-legend">
+<div class="legend-item">
+<span class="legend-color"></span>
+                            Zona de risco
+                        </div>
+<div class="legend-item">
+<span class="legend-color green"></span>
+                            Ponto de Salvamento
+                        </div>
+</div>
+</section>
+</div>
+</main>
+</div>
+</div>
+<!-- MODAL DE CADASTRO -->
+<div class="modal-overlay" id="zoneModal">
+<div class="modal">
+<h2 id="modalTitle">Nova Zona de Risco</h2>
+<form id="zoneForm">
+<div class="form-group">
+<label for="zoneName">Nome da zona</label>
+<input id="zoneName" placeholder="Ex.: Ponte JK" required="" type="text"/>
+</div>
+<div class="form-group">
+<label for="zoneRisk">Nível de risco</label>
+<select id="zoneRisk">
+<option value="high">Alto</option>
+<option value="medium">Médio</option>
+<option value="low">Baixo</option>
+</select>
+</div>
+<div class="form-group">
+<label for="zoneStatus">Status</label>
+<select id="zoneStatus">
+<option value="active">Ativa</option>
+<option value="inactive">Inativa</option>
+</select>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label for="zoneLatitude">Latitude</label>
+<input id="zoneLatitude" max="90" min="-90" required="" step="any" type="number"/>
+</div>
+<div class="form-group">
+<label for="zoneLongitude">Longitude</label>
+<input id="zoneLongitude" max="180" min="-180" required="" step="any" type="number"/>
+</div>
+</div>
+<div class="modal-actions">
+<button class="cancel-button" onclick="closeZoneModal()" type="button">
+                    Cancelar
+                </button>
+<button class="save-button" type="submit">
+                    Salvar Zona
+                </button>
+</div>
+</form>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+
+/* ====================================
+   DADOS DEMONSTRATIVOS
+==================================== */
+
+let zones = [
+    {
+        id: 1,
+        name: "Ponte JK",
+        risk: "high",
+        status: "active",
+        lat: -15.8230,
+        lng: -47.8280
+    },
+    {
+        id: 2,
+        name: "Orla da Concha Acústica",
+        risk: "medium",
+        status: "active",
+        lat: -15.7900,
+        lng: -47.8660
+    },
+    {
+        id: 3,
+        name: "Ilha dos Pássaros",
+        risk: "low",
+        status: "active",
+        lat: -15.8000,
+        lng: -47.8450
+    },
+    {
+        id: 4,
+        name: "Espelho do Lago Norte",
+        risk: "high",
+        status: "active",
+        lat: -15.7550,
+        lng: -47.8250
+    }
+];
+
+const riskNames = {
+    high: "Alto",
+    medium: "Médio",
+    low: "Baixo"
+};
+
+let map;
+let zoneLayers;
+let editingId = null;
+
+const initialCenter = [-15.8000, -47.8400];
+
+
+/* ====================================
+   INICIALIZAR MAPA
+==================================== */
+
+function initializeMap() {
+
+    if (typeof L === "undefined") {
+        document.getElementById("map").textContent =
+            "Não foi possível carregar o mapa.";
+        return;
+    }
+
+    map = L.map("map").setView(initialCenter, 12);
+
+    L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+            attribution: "Tiles © Esri",
+            maxZoom: 19
+        }
+    ).addTo(map);
+
+    zoneLayers = L.layerGroup().addTo(map);
+
+    const rescueIcon = L.divIcon({
+        className: "",
+        html: `
+            <div style="
+                width:30px;
+                height:30px;
+                border-radius:50% 50% 50% 0;
+                background:#08a76f;
+                transform:rotate(-45deg);
+                border:3px solid white;
+                box-shadow:0 2px 8px #0007;
+                display:grid;
+                place-items:center;
+            ">
+                <span style="
+                    width:9px;
+                    height:9px;
+                    border-radius:50%;
+                    background:white;
+                "></span>
+            </div>
+        `,
+        iconSize: [30,30],
+        iconAnchor: [15,30]
+    });
+
+    // Ponto demonstrativo de salvamento
+    L.marker([-15.7970, -47.8520], {
+        icon: rescueIcon
+    }).addTo(map)
+    .bindPopup("<strong>Ponto de Salvamento</strong>");
+
+    renderMapZones();
+
+}
+
+
+/* ====================================
+   DESENHAR ZONAS
+==================================== */
+
+function renderMapZones() {
+
+    if (!map || !zoneLayers) return;
+
+    zoneLayers.clearLayers();
+
+    const colors = {
+        high: "#ef4444",
+        medium: "#f59e0b",
+        low: "#10b981"
+    };
+
+    zones.forEach(zone => {
+
+        if (zone.status !== "active") return;
+
+        const color = colors[zone.risk];
+
+        // Área circular ilustrativa de 350 metros.
+        // Não representa um limite geográfico oficial.
+        const circle = L.circle(
+            [zone.lat, zone.lng],
+            {
+                radius: 350,
+                color: color,
+                fillColor: color,
+                fillOpacity: 0.32,
+                weight: 2
+            }
+        ).addTo(zoneLayers);
+
+        const popup = document.createElement("div");
+
+        const title = document.createElement("strong");
+        title.textContent = zone.name;
+
+        const description = document.createElement("p");
+        description.textContent =
+            "Nível de risco: " + riskNames[zone.risk];
+
+        popup.appendChild(title);
+        popup.appendChild(description);
+
+        circle.bindPopup(popup);
+
+    });
+
+}
+
+
+/* ====================================
+   TABELA
+==================================== */
+
+function renderZones() {
+
+    const table = document.getElementById("zonesTable");
+
+    table.innerHTML = "";
+
+    zones.forEach(zone => {
+
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td class="zone-name"></td>
+
+            <td>
+                <span class="risk-level ${zone.risk}">
+                    <span class="risk-dot"></span>
+                    ${riskNames[zone.risk]}
+                </span>
+            </td>
+
+            <td>
+                <span class="zone-status
+                    ${zone.status === "inactive" ? "inactive" : ""}">
+                    ${zone.status === "active" ? "Ativa" : "Inativa"}
+                </span>
+            </td>
+
+            <td>
+                <div class="table-actions">
+                    <button class="icon-button edit-button"
+                        title="Editar zona">✎</button>
+
+                    <button class="icon-button delete-button"
+                        title="Excluir zona">♜</button>
+                </div>
+            </td>
+        `;
+
+        row.querySelector(".zone-name").textContent = zone.name;
+
+        row.querySelector(".edit-button").onclick =
+            () => editZone(zone.id);
+
+        row.querySelector(".delete-button").onclick =
+            () => deleteZone(zone.id);
+
+        row.querySelector(".zone-name").style.cursor = "pointer";
+
+        row.querySelector(".zone-name").onclick = () => {
+
+            if (!map) return;
+
+            map.setView([zone.lat, zone.lng], 15);
+
+        };
+
+        table.appendChild(row);
+
+    });
+
+}
+
+
+/* ====================================
+   NOVA ZONA / EDITAR
+==================================== */
+
+function openZoneModal() {
+
+    editingId = null;
+
+    document.getElementById("modalTitle")
+        .textContent = "Nova Zona de Risco";
+
+    document.getElementById("zoneForm").reset();
+
+    document.getElementById("zoneLatitude").value =
+        initialCenter[0];
+
+    document.getElementById("zoneLongitude").value =
+        initialCenter[1];
+
+    document.getElementById("zoneModal")
+        .classList.add("active");
+
+}
+
+
+function editZone(id) {
+
+    const zone = zones.find(item => item.id === id);
+
+    if (!zone) return;
+
+    editingId = id;
+
+    document.getElementById("modalTitle")
+        .textContent = "Editar Zona de Risco";
+
+    document.getElementById("zoneName").value = zone.name;
+    document.getElementById("zoneRisk").value = zone.risk;
+    document.getElementById("zoneStatus").value = zone.status;
+    document.getElementById("zoneLatitude").value = zone.lat;
+    document.getElementById("zoneLongitude").value = zone.lng;
+
+    document.getElementById("zoneModal")
+        .classList.add("active");
+
+}
+
+
+function closeZoneModal() {
+
+    document.getElementById("zoneModal")
+        .classList.remove("active");
+
+}
+
+
+/* ====================================
+   SALVAR ZONA
+==================================== */
+
+document.getElementById("zoneForm")
+    .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+        const name = document.getElementById("zoneName")
+            .value.trim();
+
+        const risk = document.getElementById("zoneRisk").value;
+
+        const status = document.getElementById("zoneStatus").value;
+
+        const lat = Number(
+            document.getElementById("zoneLatitude").value
+        );
+
+        const lng = Number(
+            document.getElementById("zoneLongitude").value
+        );
+
+        if (!name || !Number.isFinite(lat) || !Number.isFinite(lng)) {
+            alert("Preencha os campos corretamente.");
+            return;
+        }
+
+        if (editingId !== null) {
+
+            const zone = zones.find(item => item.id === editingId);
+
+            if (zone) {
+                zone.name = name;
+                zone.risk = risk;
+                zone.status = status;
+                zone.lat = lat;
+                zone.lng = lng;
+            }
+
+            showToast("Zona atualizada com sucesso!");
+
+        } else {
+
+            zones.push({
+                id: Date.now(),
+                name: name,
+                risk: risk,
+                status: status,
+                lat: lat,
+                lng: lng
+            });
+
+            showToast("Nova zona cadastrada!");
+
+        }
+
+        renderZones();
+        renderMapZones();
+
+        if (map) {
+            map.setView([lat, lng], 14);
+        }
+
+        closeZoneModal();
+
+    });
+
+
+/* ====================================
+   EXCLUIR ZONA
+==================================== */
+
+function deleteZone(id) {
+
+    const zone = zones.find(item => item.id === id);
+
+    if (!zone) return;
+
+    const confirmed = confirm(
+        "Deseja excluir a zona de risco " + zone.name + "?"
+    );
+
+    if (!confirmed) return;
+
+    zones = zones.filter(item => item.id !== id);
+
+    renderZones();
+    renderMapZones();
+
+    showToast("Zona excluída com sucesso!");
+
+}
+
+
+/* ====================================
+   MENU LATERAL
+==================================== */
+
+function menuClick(page) {
+
+    if (page === "Sair") {
+        showToast("Saída demonstrativa. Login ainda não integrado.");
+        return;
+    }
+
+    showToast(
+        "A página " + page + " será integrada posteriormente."
+    );
+
+}
+
+
+/* ====================================
+   NOTIFICAÇÕES
+==================================== */
+
+let toastTimer;
+
+function showToast(message) {
+
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+    toast.style.display = "block";
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+        toast.style.display = "none";
+    }, 3000);
+
+}
+
+
+/* ====================================
+   INICIAR
+==================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    renderZones();
+    initializeMap();
+
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+SCS - Padronização visual
+
+O arquivo scs-global.css define cores, tamanhos e ícones SVG dos menus.
+Todas as páginas HTML carregam esse CSS após os estilos internos.
+Os ícones dos menus são vetoriais e não dependem de fontes ou CDN.
+Os layouts de conteúdo foram preservados; esta revisão concentra-se na identidade visual e nos menus.
+Para ajustar cores e medidas comuns, edite scs-global.css.

@@ -1,0 +1,868 @@
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistema Candango de Salvamento — Relatórios</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #031b31;
+    color: #263f55;
+}
+
+button, input {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+.app {
+    min-height: 100vh;
+    border: 2px solid #0c70aa;
+    border-radius: 11px;
+    overflow: hidden;
+    background: #f7fafc;
+}
+
+/* CABEÇALHO */
+
+.topbar {
+    height: 65px;
+    background: #052440;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    color: #07518a;
+    display: grid;
+    place-items: center;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.brand h1 {
+    font-size: 24px;
+}
+
+.profile-label {
+    border-left: 1px solid #45647d;
+    padding-left: 18px;
+    font-size: 14px;
+    color: #d3e0ec;
+}
+
+.more-button {
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 25px;
+}
+
+/* LAYOUT */
+
+.layout {
+    display: flex;
+    min-height: calc(100vh - 65px);
+}
+
+/* MENU LATERAL */
+
+.sidebar {
+    width: 210px;
+    min-width: 210px;
+    background: #052442;
+    padding-top: 16px;
+}
+
+.menu-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 15px 18px;
+    background: transparent;
+    color: #d4e1ec;
+    border: none;
+    border-left: 4px solid transparent;
+    font-size: 14px;
+    text-align: left;
+    transition: .2s;
+}
+
+.menu-item:hover {
+    background: #0b416f;
+}
+
+.menu-item.active {
+    background: #10518a;
+    border-left-color: #2cb7ef;
+    color: white;
+    font-weight: bold;
+}
+
+.menu-icon {
+    width: 24px;
+    text-align: center;
+    font-size: 19px;
+}
+
+/* CONTEÚDO */
+
+.main {
+    flex: 1;
+    min-width: 0;
+    background: #f7fafc;
+    padding: 25px;
+}
+
+.content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-title {
+    font-size: 25px;
+    color: #173d5a;
+    margin-bottom: 14px;
+}
+
+/* FILTRO DE PERÍODO */
+
+.filter-section {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.period-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.date-fields {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.date-fields input {
+    border: 1px solid #d5e2ec;
+    background: white;
+    border-radius: 7px;
+    padding: 12px;
+    color: #32546e;
+    font-size: 14px;
+    width: 170px;
+}
+
+.date-separator {
+    color: #7b92a4;
+}
+
+.generate-button {
+    background: #063e70;
+    border: none;
+    border-radius: 7px;
+    color: white;
+    padding: 14px 22px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.generate-button:hover {
+    background: #08629c;
+}
+
+/* INDICADORES */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 17px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #dce6ee;
+    border-radius: 10px;
+    padding: 24px;
+    min-height: 110px;
+    box-shadow: 0 2px 8px #153b5508;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #63798b;
+    margin-bottom: 12px;
+}
+
+.stat-value {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.stat-value.total {
+    color: #064e8e;
+}
+
+.stat-value.completed {
+    color: #159b70;
+}
+
+.stat-value.progress {
+    color: #e9911c;
+}
+
+.stat-value.open {
+    color: #e53943;
+}
+
+/* PAINÉIS INFERIORES */
+
+.report-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.panel {
+    background: white;
+    border: 1px solid #dce6ee;
+    border-radius: 10px;
+    padding: 22px;
+    min-width: 0;
+    box-shadow: 0 2px 8px #153b5508;
+}
+
+.panel h2 {
+    font-size: 16px;
+    color: #173d5a;
+    margin-bottom: 24px;
+}
+
+/* BARRAS DE OCORRÊNCIAS */
+
+.chart-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 45px;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.chart-label {
+    font-size: 13px;
+    color: #526c80;
+}
+
+.bar-track {
+    width: 100%;
+    height: 17px;
+    background: #edf3f7;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0966b3, #58a5db);
+    border-radius: 4px;
+    transition: width .5s ease;
+}
+
+.chart-percent {
+    text-align: right;
+    font-size: 13px;
+    color: #3e5a70;
+    font-weight: bold;
+}
+
+/* TEMPO MÉDIO */
+
+.average-time {
+    font-size: 32px;
+    color: #243d54;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.average-divider {
+    height: 1px;
+    background: #e4ebf1;
+    margin-bottom: 20px;
+}
+
+.average-description {
+    color: #657d90;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* EXPORTAÇÃO */
+
+.export-section {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.export-button {
+    padding: 12px 18px;
+    background: white;
+    border: 1px solid #7ea8c7;
+    border-radius: 7px;
+    color: #176397;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.export-button:hover {
+    background: #e9f4fc;
+}
+
+/* NOTIFICAÇÃO */
+
+.toast {
+    position: fixed;
+    right: 25px;
+    bottom: 25px;
+    display: none;
+    padding: 15px 22px;
+    background: #08775c;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px #0003;
+    font-size: 14px;
+    z-index: 1000;
+}
+
+/* RESPONSIVIDADE */
+
+@media(max-width: 1000px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .report-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 750px) {
+    .sidebar {
+        width: 70px;
+        min-width: 70px;
+    }
+
+    .menu-item {
+        justify-content: center;
+        padding: 16px 5px;
+    }
+
+    .menu-label {
+        display: none;
+    }
+
+    .main {
+        padding: 18px;
+    }
+
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .generate-button {
+        width: 100%;
+    }
+}
+
+@media(max-width: 480px) {
+    .layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-width: 100%;
+        display: flex;
+        overflow-x: auto;
+        padding: 0;
+    }
+
+    .menu-item {
+        min-width: 50px;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+    }
+
+    .menu-item.active {
+        border-left: none;
+        border-bottom-color: #2cb7ef;
+    }
+
+    .date-fields input {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .stats-grid {
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 16px;
+    }
+
+    .stat-value {
+        font-size: 25px;
+    }
+
+    .chart-row {
+        grid-template-columns: 75px 1fr 40px;
+        gap: 8px;
+    }
+}
+</style>
+<link href="../scs-global.css" rel="stylesheet"/><link href="../logo-sistema-candango.png" rel="icon" type="image/png"/></head>
+<body>
+<div class="app">
+<!-- CABEÇALHO -->
+<header class="topbar scs-unified-header"><div class="scs-header-brand"><div aria-hidden="true" class="scs-header-logo"><img alt="Logomarca do Sistema Candango de Salvamento" src="../logo-sistema-candango.png"/></div><strong class="scs-header-title">Sistema Candango de Salvamento</strong><span class="scs-header-role">Administrador</span></div><div class="scs-header-user"><span class="scs-header-avatar"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></svg></span><span class="scs-header-username">Administrador</span></div></header>
+<div class="layout">
+<!-- MENU LATERAL -->
+<nav class="sidebar"><a class="menu-item" href="administrado.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 10 9-7 9 7"></path><path d="M5 9v12h14V9"></path><path d="M9 21v-7h6v7"></path></svg></span><span class="menu-label">Início</span></a><a class="menu-item" href="painel_ocorrencias.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect height="16" rx="2" width="16" x="4" y="4"></rect><path d="M8 9h8M8 13h8M8 17h5"></path></svg></span><span class="menu-label">Ocorrências</span></a><a class="menu-item active" href="relatorios.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M4 20h16M7 16v-5M12 16V5M17 16V9"></path></svg></span><span class="menu-label">Relatórios</span></a><a class="menu-item" href="escalas.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect height="16" rx="2" width="18" x="3" y="5"></rect><path d="M7 3v4M17 3v4M3 10h18M7 14h3M14 14h3"></path></svg></span><span class="menu-label">Escalas de Plantão</span></a><a class="menu-item" href="zona_risco.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 3 2 21h20L12 3z"></path><path d="M12 9v5M12 18h.01"></path></svg></span><span class="menu-label">Zonas de Risco</span></a><a class="menu-item" href="pontos_salvamento.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="4"></circle><path d="M12 3v5M12 16v5M3 12h5M16 12h5"></path></svg></span><span class="menu-label">Pontos de Salvamento</span></a><a class="menu-item" href="listar_usuarios.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span><span class="menu-label">Usuários</span></a><a class="menu-item" href="notificacoes.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"></path></svg></span><span class="menu-label">Notificações</span></a><a class="menu-item" href="configuracoes.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3"></circle><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"></path></svg></span><span class="menu-label">Configurações</span></a><a class="menu-item" href="../index.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 17l5-5-5-5M15 12H3"></path><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"></path></svg></span><span class="menu-label">Sair</span></a></nav>
+<!-- CONTEÚDO -->
+<main class="main">
+<div class="content">
+<h2 class="page-title">Relatórios</h2>
+<!-- PERÍODO -->
+<section class="filter-section">
+<div class="period-group">
+<label>Período</label>
+<div class="date-fields">
+<input id="startDate" type="date" value="2025-06-01"/>
+<span class="date-separator">até</span>
+<input id="endDate" type="date" value="2025-06-16"/>
+</div>
+</div>
+<button class="generate-button" onclick="generateReport()">
+                        Gerar Relatório
+                    </button>
+</section>
+<!-- INDICADORES -->
+<section class="stats-grid">
+<div class="stat-card">
+<div class="stat-label">Total</div>
+<div class="stat-value total" id="totalValue">48</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Concluídas</div>
+<div class="stat-value completed" id="completedValue">41</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Em andamento</div>
+<div class="stat-value progress" id="progressValue">5</div>
+</div>
+<div class="stat-card">
+<div class="stat-label">Abertas</div>
+<div class="stat-value open" id="openValue">2</div>
+</div>
+</section>
+<!-- PAINÉIS -->
+<section class="report-grid">
+<!-- TIPOS DE OCORRÊNCIA -->
+<div class="panel">
+<h2>Tipos de ocorrência</h2>
+<div id="occurrenceChart"></div>
+</div>
+<!-- TEMPO MÉDIO -->
+<div class="panel">
+<h2>Tempo médio de atendimento</h2>
+<div class="average-time" id="averageTime">
+                            32 min
+                        </div>
+<div class="average-divider"></div>
+<p class="average-description">
+                            Dados apresentados conforme a LGPD.
+                        </p>
+</div>
+</section>
+<!-- EXPORTAÇÃO -->
+<div class="export-section">
+<button class="export-button" onclick="exportCSV()">
+                        ↓ Exportar CSV
+                    </button>
+</div>
+</div>
+</main>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+
+/* =====================================
+   BASE DE DADOS DEMONSTRATIVA
+===================================== */
+
+const occurrences = [];
+
+const types = [
+    "Afogamento",
+    "Embarcação",
+    "Ferimento",
+    "Queda",
+    "Outros"
+];
+
+const typeCounts = [15, 10, 7, 6, 10];
+
+let occurrenceId = 4500;
+
+types.forEach((type, typeIndex) => {
+
+    for (let i = 0; i < typeCounts[typeIndex]; i++) {
+
+        const index = occurrences.length;
+
+        let status;
+
+        if (index < 41) {
+            status = "Concluída";
+        } else if (index < 46) {
+            status = "Em andamento";
+        } else {
+            status = "Aberta";
+        }
+
+        const day = 1 + (index % 16);
+
+        const date =
+            "2025-06-" + String(day).padStart(2, "0");
+
+        occurrences.push({
+            id: ++occurrenceId,
+            date: date,
+            type: type,
+            status: status,
+            attendanceMinutes: status === "Concluída"
+                ? 32
+                : null
+        });
+
+    }
+
+});
+
+
+/* =====================================
+   ESTADO DO RELATÓRIO
+===================================== */
+
+let currentReport = null;
+
+
+/* =====================================
+   GERAR RELATÓRIO
+===================================== */
+
+function generateReport() {
+
+    const startDate = document.getElementById("startDate").value;
+    const endDate = document.getElementById("endDate").value;
+
+    if (!startDate || !endDate) {
+        alert("Selecione as datas inicial e final.");
+        return;
+    }
+
+    if (startDate > endDate) {
+        alert("A data inicial não pode ser maior que a data final.");
+        return;
+    }
+
+    const filtered = occurrences.filter(item =>
+        item.date >= startDate &&
+        item.date <= endDate
+    );
+
+    const total = filtered.length;
+
+    const completed = filtered.filter(
+        item => item.status === "Concluída"
+    ).length;
+
+    const progress = filtered.filter(
+        item => item.status === "Em andamento"
+    ).length;
+
+    const open = filtered.filter(
+        item => item.status === "Aberta"
+    ).length;
+
+    const attended = filtered.filter(
+        item => item.attendanceMinutes !== null
+    );
+
+    const average = attended.length
+        ? Math.round(
+            attended.reduce(
+                (sum, item) => sum + item.attendanceMinutes,
+                0
+            ) / attended.length
+        )
+        : 0;
+
+    const typeData = types.map(type => {
+
+        const count = filtered.filter(
+            item => item.type === type
+        ).length;
+
+        return {
+            name: type,
+            count: count,
+            percent: total
+                ? Math.round((count / total) * 100)
+                : 0
+        };
+
+    });
+
+    currentReport = {
+        startDate,
+        endDate,
+        total,
+        completed,
+        progress,
+        open,
+        average,
+        typeData,
+        occurrences: filtered
+    };
+
+    updateDashboard();
+
+    showToast("Relatório gerado com sucesso!");
+
+}
+
+
+/* =====================================
+   ATUALIZAR INDICADORES
+===================================== */
+
+function updateDashboard() {
+
+    if (!currentReport) return;
+
+    document.getElementById("totalValue").textContent =
+        currentReport.total;
+
+    document.getElementById("completedValue").textContent =
+        currentReport.completed;
+
+    document.getElementById("progressValue").textContent =
+        currentReport.progress;
+
+    document.getElementById("openValue").textContent =
+        currentReport.open;
+
+    document.getElementById("averageTime").textContent =
+        currentReport.average + " min";
+
+    renderChart(currentReport.typeData);
+
+}
+
+
+/* =====================================
+   GRÁFICO DE BARRAS
+===================================== */
+
+function renderChart(data) {
+
+    const chart = document.getElementById("occurrenceChart");
+
+    chart.innerHTML = "";
+
+    data.forEach(item => {
+
+        const row = document.createElement("div");
+
+        row.className = "chart-row";
+
+        const label = document.createElement("span");
+        label.className = "chart-label";
+        label.textContent = item.name;
+
+        const track = document.createElement("div");
+        track.className = "bar-track";
+
+        const fill = document.createElement("div");
+        fill.className = "bar-fill";
+        fill.style.width = item.percent + "%";
+
+        track.appendChild(fill);
+
+        const percentage = document.createElement("span");
+        percentage.className = "chart-percent";
+        percentage.textContent = item.percent + "%";
+
+        row.appendChild(label);
+        row.appendChild(track);
+        row.appendChild(percentage);
+
+        chart.appendChild(row);
+
+    });
+
+}
+
+
+/* =====================================
+   EXPORTAR CSV
+===================================== */
+
+function exportCSV() {
+
+    if (!currentReport) {
+        alert("Gere o relatório antes de exportar.");
+        return;
+    }
+
+    const rows = [
+        ["ID", "Data", "Tipo", "Status", "Tempo (min)"]
+    ];
+
+    currentReport.occurrences.forEach(item => {
+
+        rows.push([
+            item.id,
+            item.date,
+            item.type,
+            item.status,
+            item.attendanceMinutes ?? ""
+        ]);
+
+    });
+
+    function csvCell(value) {
+        const text = String(value ?? "");
+
+        // Evita interpretação de fórmulas em planilhas.
+        const safe = /^[\s]*[=+\-@]/.test(text)
+            ? "'" + text
+            : text;
+
+        return '"' + safe.replace(/"/g, '""') + '"';
+    }
+
+    const csv = "\uFEFF" + rows
+        .map(row => row.map(csvCell).join(";"))
+        .join("\r\n");
+
+    const blob = new Blob([csv], {
+        type: "text/csv;charset=utf-8;"
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download =
+        "SCS_Relatorio_" +
+        currentReport.startDate +
+        "_a_" +
+        currentReport.endDate +
+        ".csv";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    showToast("Arquivo CSV exportado!");
+
+}
+
+
+/* =====================================
+   MENU LATERAL
+===================================== */
+
+function menuClick(page) {
+ const routes = {"Início": "administrado.html", "Ocorrências": "../socorristas/ocorrencias.html", "Escalas de Plantão": "../socorristas/escalas.html", "Zonas de Risco": "zona_risco.html", "Usuários": "listar_usuarios.html"};
+ if(page === "Sair" || page === "Saída") { if(confirm("Deseja sair do sistema?")) window.location.href="../index.html"; return; }
+ if(routes[page]) { window.location.href=routes[page]; return; }
+ alert("Esta funcionalidade ainda não possui uma página neste projeto.");
+}
+
+
+/* =====================================
+   NOTIFICAÇÕES
+===================================== */
+
+let toastTimer;
+
+function showToast(message) {
+
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+    toast.style.display = "block";
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+        toast.style.display = "none";
+    }, 3000);
+
+}
+
+
+/* =====================================
+   INICIALIZAÇÃO
+===================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    generateReport();
+
+});
+
+</script>
+</body>
+</html>

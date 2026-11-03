@@ -1,0 +1,1045 @@
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistema Candango de Salvamento — Painel do Banhista</title>
+<link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root {
+    --navy: #041e37;
+    --navy2: #062b4c;
+    --blue: #095493;
+    --border: #12699f;
+    --white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #031728;
+    color: white;
+}
+
+button {
+    cursor: pointer;
+    font: inherit;
+}
+
+.app {
+    height: 100vh;
+    min-height: 550px;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid var(--border);
+    border-radius: 13px;
+    overflow: hidden;
+}
+
+/* CABEÇALHO */
+
+.topbar {
+    height: 64px;
+    min-height: 64px;
+    background: #05213b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 22px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    color: #07518a;
+    display: grid;
+    place-items: center;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.brand strong {
+    font-size: 23px;
+}
+
+.profile-type {
+    border-left: 1px solid #41627c;
+    padding-left: 15px;
+    font-size: 14px;
+    color: #d7e5f0;
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border: 2px solid #a9c8df;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+}
+
+.settings-button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 20px;
+    padding: 5px;
+}
+
+/* ESTRUTURA */
+
+.layout {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+}
+
+/* MENU LATERAL */
+
+.sidebar {
+    width: 185px;
+    min-width: 185px;
+    background: #052442;
+    padding-top: 20px;
+}
+
+.menu-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    border: none;
+    border-left: 4px solid transparent;
+    background: transparent;
+    color: #d5e3ef;
+    padding: 17px 18px;
+    font-size: 14px;
+    text-align: left;
+}
+
+.menu-item:hover {
+    background: #0c416e;
+}
+
+.menu-item.active {
+    background: #10528f;
+    border-left-color: #2cb9f1;
+    color: white;
+    font-weight: bold;
+}
+
+.menu-icon {
+    font-size: 20px;
+    width: 25px;
+    text-align: center;
+}
+
+/* MAPA E PAINEL */
+
+.content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    position: relative;
+    background: #062b42;
+}
+
+.map-area {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    background: #0b4250;
+}
+
+/* CONTROLE DE MAPA */
+
+.map-switch {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 500;
+    display: flex;
+    background: white;
+    border-radius: 7px;
+    padding: 4px;
+    box-shadow: 0 3px 12px #0005;
+}
+
+.map-switch button {
+    border: none;
+    background: transparent;
+    color: #34546d;
+    padding: 10px 17px;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.map-switch button.active {
+    background: #074679;
+    color: white;
+}
+
+/* PAINEL DIREITO */
+
+.right-panel {
+    width: 270px;
+    min-width: 270px;
+    background: #052442;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    overflow-y: auto;
+}
+
+/* LOCALIZAÇÃO */
+
+.location-card {
+    background: #07365f;
+    border-radius: 12px;
+    padding: 22px 17px;
+}
+
+.location-card h2 {
+    font-size: 20px;
+    margin-bottom: 16px;
+}
+
+.coordinates {
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1.6;
+}
+
+.location-accuracy {
+    font-size: 12px;
+    color: #b2cce0;
+    margin-top: 5px;
+}
+
+.location-button {
+    width: 100%;
+    margin-top: 14px;
+    padding: 10px;
+    border: 1px solid #6098be;
+    background: #0b4a7b;
+    color: white;
+    border-radius: 7px;
+    font-size: 12px;
+}
+
+/* SOS */
+
+.sos-button {
+    min-height: 185px;
+    width: 100%;
+    background: linear-gradient(145deg, #ff672e, #ff8846);
+    border: none;
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 5px 15px #0003;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    text-align: center;
+    padding: 15px;
+    transition: .2s;
+}
+
+.sos-button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.07);
+}
+
+.sos-symbol {
+    font-size: 37px;
+}
+
+.sos-title {
+    font-size: 29px;
+    font-weight: bold;
+}
+
+.sos-subtitle {
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.sos-description {
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* LEGENDA */
+
+.legend-card {
+    flex: 1;
+    background: #073158;
+    border-radius: 10px;
+    padding: 20px 14px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin: 17px 0;
+    font-size: 13px;
+}
+
+.legend-icon {
+    width: 29px;
+    height: 29px;
+    min-width: 29px;
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+}
+
+.legend-icon.rescue {
+    color: #14d18b;
+}
+
+.legend-icon.risk {
+    color: #ff4343;
+}
+
+.legend-icon.warning {
+    color: #ffc14d;
+}
+
+.legend-icon.position {
+    color: #6db9ff;
+}
+
+/* MARCADORES PERSONALIZADOS */
+
+.custom-marker {
+    display: grid;
+    place-items: center;
+    border: 3px solid white;
+    border-radius: 50% 50% 50% 0;
+    width: 34px;
+    height: 34px;
+    transform: rotate(-45deg);
+    box-shadow: 0 3px 12px #0009;
+}
+
+.custom-marker span {
+    transform: rotate(45deg);
+    font-size: 18px;
+    color: white;
+}
+
+.custom-marker.rescue {
+    background: #0aa875;
+}
+
+.custom-marker.risk {
+    background: #e94035;
+}
+
+.custom-marker.warning {
+    background: #f5a623;
+}
+
+.user-position {
+    width: 20px;
+    height: 20px;
+    background: #248aff;
+    border: 4px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 0 9px #248aff55, 0 0 15px #248aff;
+}
+
+/* MODAL SOS */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: #00182ed9;
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal {
+    width: 100%;
+    max-width: 430px;
+    background: white;
+    color: #24435b;
+    border-radius: 14px;
+    padding: 30px;
+    text-align: center;
+}
+
+.modal-icon {
+    font-size: 45px;
+    color: #f36c32;
+    margin-bottom: 12px;
+}
+
+.modal h2 {
+    color: #173c5c;
+    margin-bottom: 13px;
+}
+
+.modal p {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 22px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.modal-actions button {
+    flex: 1;
+    padding: 13px;
+    border-radius: 7px;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.cancel-button {
+    border: 1px solid #9ebbd0;
+    background: white;
+    color: #315e7f;
+}
+
+.confirm-button {
+    border: none;
+    background: #f26b32;
+    color: white;
+}
+
+/* AVISOS */
+
+.toast {
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3000;
+    background: #063e65;
+    color: white;
+    padding: 14px 22px;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px #0005;
+    display: none;
+    font-size: 13px;
+    max-width: 90%;
+    text-align: center;
+}
+
+/* RESPONSIVIDADE */
+
+@media(max-width: 1000px) {
+    .sidebar {
+        width: 70px;
+        min-width: 70px;
+    }
+
+    .menu-item {
+        justify-content: center;
+        padding: 16px 5px;
+    }
+
+    .menu-label {
+        display: none;
+    }
+
+    .right-panel {
+        width: 245px;
+        min-width: 245px;
+    }
+}
+
+@media(max-width: 700px) {
+    .app {
+        height: auto;
+        min-height: 100vh;
+    }
+
+    .layout {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-width: 100%;
+        display: flex;
+        padding: 0;
+    }
+
+    .menu-item {
+        flex: 1;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+    }
+
+    .menu-item.active {
+        border-left: none;
+        border-bottom-color: #2cb9f1;
+    }
+
+    .content {
+        flex-direction: column;
+    }
+
+    .map-area {
+        height: 55vh;
+        min-height: 350px;
+        flex: none;
+    }
+
+    .right-panel {
+        width: 100%;
+        min-width: 100%;
+    }
+
+    .sos-button {
+        min-height: 155px;
+    }
+
+    .legend-card {
+        flex: none;
+    }
+}
+</style>
+<link href="../scs-global.css" rel="stylesheet"/><link href="../logo-sistema-candango.png" rel="icon" type="image/png"/></head>
+<body>
+<div class="app">
+<!-- CABEÇALHO -->
+<header class="topbar scs-unified-header"><div class="scs-header-brand"><div aria-hidden="true" class="scs-header-logo"><img alt="Logomarca do Sistema Candango de Salvamento" src="../logo-sistema-candango.png"/></div><strong class="scs-header-title">Sistema Candango de Salvamento</strong><span class="scs-header-role">Banhista</span></div><div class="scs-header-user"><span class="scs-header-avatar"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></svg></span><span class="scs-header-username">Banhista</span></div></header>
+<div class="layout">
+<!-- MENU LATERAL -->
+<nav class="sidebar"><a class="menu-item active" href="mapa_botao_panico.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 10 9-7 9 7"></path><path d="M5 9v12h14V9"></path><path d="M9 21v-7h6v7"></path></svg></span><span class="menu-label">Início</span></a><a class="menu-item" href="mapa_banhista.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"></path></svg></span><span class="menu-label">Mapa</span></a><a class="menu-item" href="editar_banhista.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></svg></span><span class="menu-label">Meu Perfil</span></a><a class="menu-item" href="../index.html"><span class="scs-menu-icon"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 17l5-5-5-5M15 12H3"></path><path d="M12 3h7a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-7"></path></svg></span><span class="menu-label">Sair</span></a></nav>
+<!-- MAPA E PAINEL -->
+<main class="content">
+<section class="map-area">
+<div id="map"></div>
+<div class="map-switch">
+<button id="normalMap" onclick="changeMap('normal')">
+                        Mapa
+                    </button>
+<button class="active" id="satelliteMap" onclick="changeMap('satellite')">
+                        Satélite
+                    </button>
+</div>
+</section>
+<!-- PAINEL DIREITO -->
+<aside class="right-panel">
+<!-- LOCALIZAÇÃO -->
+<div class="location-card">
+<h2>Sua localização</h2>
+<div class="coordinates" id="coordinates">
+                        Aguardando localização...
+                    </div>
+<div class="location-accuracy" id="accuracy">
+                        Permita o acesso à localização.
+                    </div>
+<button class="location-button" onclick="getUserLocation()">
+                        ◎ Atualizar localização
+                    </button>
+</div>
+<!-- BOTÃO SOS -->
+<button class="sos-button" onclick="openSOS()">
+<span class="sos-symbol">♙</span>
+<span class="sos-title">SOS</span>
+<span class="sos-subtitle">BOTÃO DE PÂNICO</span>
+<span class="sos-description">
+                        Mantenha pressionado<br/>
+                        por 3 segundos
+                    </span>
+</button>
+<!-- LEGENDA -->
+<div class="legend-card">
+<div class="legend-item">
+<span class="legend-icon rescue">📍</span>
+<span>Ponto de Salvamento</span>
+</div>
+<div class="legend-item">
+<span class="legend-icon risk">▲</span>
+<span>Zona de Risco</span>
+</div>
+<div class="legend-item">
+<span class="legend-icon warning">⚠</span>
+<span>Ocorrência</span>
+</div>
+<div class="legend-item">
+<span class="legend-icon position">●</span>
+<span>Sua Localização</span>
+</div>
+</div>
+</aside>
+</main>
+</div>
+</div>
+<!-- MODAL SOS -->
+<div class="modal-overlay" id="sosModal">
+<div class="modal">
+<div class="modal-icon">⚠</div>
+<h2>Solicitar Salvamento</h2>
+<p>
+            Você está prestes a registrar uma solicitação
+            demonstrativa de emergência no Lago Paranoá.
+            Esta página não aciona equipes reais de resgate.
+        </p>
+<div class="modal-actions">
+<button class="cancel-button" onclick="closeSOS()">
+                Cancelar
+            </button>
+<button class="confirm-button" onclick="confirmSOS()">
+                Confirmar SOS
+            </button>
+</div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+
+/* ==========================================
+   MAPA DO LAGO PARANOÁ
+========================================== */
+
+let map;
+let satelliteLayer;
+let normalLayer;
+let userMarker = null;
+let accuracyCircle = null;
+let userCoordinates = null;
+
+const lakeCenter = [-15.7989, -47.8335];
+
+function initializeMap() {
+
+    if (typeof L === "undefined") {
+        document.getElementById("map").textContent =
+            "Não foi possível carregar a biblioteca do mapa.";
+        return;
+    }
+
+    map = L.map("map", {
+        zoomControl: true
+    }).setView(lakeCenter, 12);
+
+    satelliteLayer = L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+            attribution: "Imagens © Esri",
+            maxZoom: 19
+        }
+    );
+
+    normalLayer = L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            attribution: "© OpenStreetMap contributors",
+            maxZoom: 19
+        }
+    );
+
+    satelliteLayer.addTo(map);
+
+    addRescuePoints();
+    addRiskZones();
+    addOccurrences();
+
+    setTimeout(() => map.invalidateSize(), 300);
+
+}
+
+
+/* ==========================================
+   ALTERNAR MAPA / SATÉLITE
+========================================== */
+
+function changeMap(type) {
+
+    if (!map) return;
+
+    if (type === "satellite") {
+
+        map.removeLayer(normalLayer);
+        satelliteLayer.addTo(map);
+
+        document.getElementById("satelliteMap")
+            .classList.add("active");
+
+        document.getElementById("normalMap")
+            .classList.remove("active");
+
+    } else {
+
+        map.removeLayer(satelliteLayer);
+        normalLayer.addTo(map);
+
+        document.getElementById("normalMap")
+            .classList.add("active");
+
+        document.getElementById("satelliteMap")
+            .classList.remove("active");
+
+    }
+
+}
+
+
+/* ==========================================
+   ÍCONES PERSONALIZADOS
+========================================== */
+
+function createIcon(type, symbol) {
+
+    return L.divIcon({
+        className: "",
+        html: `
+            <div class="custom-marker ${type}">
+                <span>${symbol}</span>
+            </div>
+        `,
+        iconSize: [34, 34],
+        iconAnchor: [17, 34]
+    });
+
+}
+
+const rescuePoints = [
+    {
+        name: "Ponto de Salvamento - Lago Sul",
+        lat: -15.8280,
+        lng: -47.8210
+    },
+    {
+        name: "Ponto de Salvamento - Orla",
+        lat: -15.7900,
+        lng: -47.8720
+    }
+];
+
+const riskZones = [
+    {
+        name: "Zona de Risco - Ponte JK",
+        lat: -15.8230,
+        lng: -47.8280
+    },
+    {
+        name: "Zona de Risco - Região Norte",
+        lat: -15.7740,
+        lng: -47.8390
+    },
+    {
+        name: "Zona de Risco - Região Central",
+        lat: -15.8060,
+        lng: -47.8650
+    }
+];
+
+const occurrencePoints = [
+    {
+        name: "Ocorrência - Embarcação",
+        lat: -15.8120,
+        lng: -47.8480
+    },
+    {
+        name: "Ocorrência - Atendimento",
+        lat: -15.7880,
+        lng: -47.8230
+    }
+];
+
+
+/* ==========================================
+   PONTOS DE SALVAMENTO
+========================================== */
+
+function addRescuePoints() {
+
+    rescuePoints.forEach(point => {
+
+        L.marker([point.lat, point.lng], {
+            icon: createIcon("rescue", "●")
+        })
+        .addTo(map)
+        .bindPopup(`
+            <strong>${point.name}</strong>
+            <p>Ponto demonstrativo de salvamento.</p>
+        `);
+
+    });
+
+}
+
+
+/* ==========================================
+   ZONAS DE RISCO
+========================================== */
+
+function addRiskZones() {
+
+    riskZones.forEach(zone => {
+
+        L.marker([zone.lat, zone.lng], {
+            icon: createIcon("risk", "!")
+        })
+        .addTo(map)
+        .bindPopup(`
+            <strong>${zone.name}</strong>
+            <p>Área ilustrativa de risco.</p>
+        `);
+
+    });
+
+}
+
+
+/* ==========================================
+   OCORRÊNCIAS
+========================================== */
+
+function addOccurrences() {
+
+    occurrencePoints.forEach(point => {
+
+        L.marker([point.lat, point.lng], {
+            icon: createIcon("warning", "!")
+        })
+        .addTo(map)
+        .bindPopup(`
+            <strong>${point.name}</strong>
+            <p>Ocorrência demonstrativa.</p>
+        `);
+
+    });
+
+}
+
+
+/* ==========================================
+   LOCALIZAÇÃO DO USUÁRIO
+========================================== */
+
+function getUserLocation() {
+
+    if (!navigator.geolocation) {
+
+        showToast(
+            "Seu navegador não suporta geolocalização."
+        );
+
+        return;
+    }
+
+    document.getElementById("coordinates").textContent =
+        "Buscando localização...";
+
+    navigator.geolocation.getCurrentPosition(
+
+        function(position) {
+
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+
+            userCoordinates = { lat, lng, accuracy };
+
+            document.getElementById("coordinates").textContent =
+                lat.toFixed(4) + ", " + lng.toFixed(4);
+
+            document.getElementById("accuracy").textContent =
+                "Precisão aproximada: " +
+                Math.round(accuracy) + " m";
+
+            if (!map) return;
+
+            if (userMarker) {
+                map.removeLayer(userMarker);
+            }
+
+            if (accuracyCircle) {
+                map.removeLayer(accuracyCircle);
+            }
+
+            const userIcon = L.divIcon({
+                className: "",
+                html: '<div class="user-position"></div>',
+                iconSize: [20,20],
+                iconAnchor: [10,10]
+            });
+
+            userMarker = L.marker([lat,lng], {
+                icon: userIcon
+            }).addTo(map);
+
+            userMarker.bindPopup(
+                "<strong>Sua localização atual</strong>"
+            );
+
+            accuracyCircle = L.circle([lat,lng], {
+                radius: accuracy,
+                color: "#268dff",
+                fillColor: "#268dff",
+                fillOpacity: 0.10,
+                weight: 1
+            }).addTo(map);
+
+            map.setView([lat,lng], 15);
+
+        },
+
+        function(error) {
+
+            document.getElementById("coordinates").textContent =
+                "Localização indisponível";
+
+            document.getElementById("accuracy").textContent =
+                "Verifique as permissões do navegador.";
+
+            showToast(
+                "Não foi possível obter sua localização."
+            );
+
+        },
+
+        {
+            enableHighAccuracy: true,
+            timeout: 15000,
+            maximumAge: 0
+        }
+
+    );
+
+}
+
+
+/* ==========================================
+   BOTÃO SOS
+========================================== */
+
+function openSOS() {
+
+    document.getElementById("sosModal")
+        .classList.add("active");
+
+}
+
+function closeSOS() {
+
+    document.getElementById("sosModal")
+        .classList.remove("active");
+
+}
+
+function confirmSOS() {
+
+    const demoOccurrence = {
+        type: "SOS",
+        createdAt: new Date().toISOString(),
+        location: userCoordinates,
+        status: "Demonstração"
+    };
+
+    console.log("SOS demonstrativo:", demoOccurrence);
+
+    closeSOS();
+
+    alert(
+        "Solicitação demonstrativa registrada apenas nesta página.\n\n" +
+        "Nenhum socorrista foi notificado.\n" +
+        "Em uma emergência real, ligue 193."
+    );
+
+}
+
+
+/* ==========================================
+   MENU LATERAL
+========================================== */
+
+function menuClick(page) {
+ const routes = {"Início": "mapa_botao_panico.html", "Mapa": "mapa_banhista.html", "Meu Perfil": "editar_banhista.html"};
+ if(page === "Sair" || page === "Saída") { if(confirm("Deseja sair do sistema?")) window.location.href="../index.html"; return; }
+ if(routes[page]) { window.location.href=routes[page]; return; }
+ alert("Esta funcionalidade ainda não possui uma página neste projeto.");
+}
+
+
+/* ==========================================
+   NOTIFICAÇÕES
+========================================== */
+
+let toastTimer;
+
+function showToast(message) {
+
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+    toast.style.display = "block";
+
+    clearTimeout(toastTimer);
+
+    toastTimer = setTimeout(() => {
+        toast.style.display = "none";
+    }, 3500);
+
+}
+
+
+/* ==========================================
+   INICIALIZAÇÃO
+========================================== */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    initializeMap();
+
+    // Solicita localização ao abrir a página.
+    getUserLocation();
+
+});
+
+</script>
+</body>
+</html>

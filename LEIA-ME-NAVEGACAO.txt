@@ -1,0 +1,13 @@
+SCS - NAVEGAÇÃO INTEGRADA (PROTÓTIPO)
+
+Abra SCS/index.html e escolha o perfil, depois clique em Continuar.
+Banhista: mapa_botao_panico.html -> mapa_banhista.html -> editar_banhista.html.
+Socorrista: ocorrencias.html -> detalhe_ocorrencia.html -> laudo_salvamento.html; escalas.html e editar_socorrista.html.
+Administrador: administrado.html -> listar_usuarios.html, relatorios.html, zona_risco.html, escalas.html e ocorrencias.html.
+
+Cadastro de socorrista: link na tela inicial -> formulário -> solicitações em adms/listar_usuarios.html.
+O armazenamento é localStorage: apenas mesmo navegador e mesma origem (use Live Server). Não armazene dados reais neste protótipo.
+O login da página inicial é apenas seleção demonstrativa de perfil, SEM autenticação.
+As aprovações não concedem login real; o SOS não notifica equipes oficiais.
+Alguns painéis e indicadores usam dados fictícios independentes; ainda não existe backend ou sincronização operacional.
+O mapa Leaflet exige internet e geolocalização exige localhost ou HTTPS.

@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sistema Candango de Salvamento — Editar Banhista</title>
+<style>
+:root{
+  --blue:#078bd0;
+  --cyan:#13c4f4;
+  --muted:#aec4d6;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;color:white;
+  font-family:Arial,Helvetica,sans-serif;
+  background:linear-gradient(#061a2ca6,#061a2cce),
+    url("fundo-lago.jpg") center/cover fixed;
+}
+.shell{
+  min-height:100vh;margin:0 24px;
+  display:grid;grid-template-columns:1fr 1.05fr;
+  gap:45px;padding:55px 5%;
+  border:1px solid #ffffff35;border-radius:24px;
+  background:#071c2b85;backdrop-filter:blur(9px);
+}
+.identity{
+  display:flex;flex-direction:column;
+  justify-content:space-between;
+}
+.brand{display:flex;gap:28px;align-items:flex-start}
+.logo{
+  width:115px;height:115px;flex-shrink:0;
+  background:white;border-radius:50%;
+  display:grid;place-items:center;
+}
+.logo svg{width:75px}
+.brand h1{font-size:62px;margin:0 0 12px}
+.brand p{font-size:29px;line-height:1.5;margin:0}
+.slogan{font-size:32px;font-weight:bold;line-height:1.6}
+.slogan:after{
+  content:"";display:block;width:140px;height:4px;
+  background:var(--cyan);margin-top:24px;
+}
+.panel{
+  background:#041c34f2;border-radius:22px;
+  padding:38px 42px;box-shadow:0 12px 40px #0003;
+}
+.back{color:#9ed5f5;text-decoration:none;font-size:14px}
+h2{font-size:32px;margin:25px 0 10px}
+.subtitle{color:var(--muted);line-height:1.5}
+h3{
+  font-size:16px;color:#e1edf6;
+  border-bottom:1px solid #ffffff25;
+  padding-bottom:12px;margin:28px 0 18px;
+}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{margin-bottom:16px}
+.full{grid-column:1/-1}
+label{
+  display:block;font-size:13px;color:#d9e8f3;
+  margin-bottom:8px;
+}
+input{
+  width:100%;padding:13px 14px;
+  background:#0b3353;color:white;
+  border:1px solid #316182;border-radius:8px;
+  font:14px Arial;
+}
+input:focus{
+  outline:none;border-color:var(--cyan);
+  box-shadow:0 0 0 2px #13c4f426;
+}
+input:disabled{background:#08263e;color:#a1b9c9}
+small{display:block;color:#9eb4c5;margin-top:6px;font-size:11px}
+.profile{
+  display:flex;align-items:center;gap:15px;
+  background:#0a3556;border:1px solid #1a5c84;
+  border-radius:10px;padding:16px;margin:25px 0;
+}
+.avatar{
+  width:60px;height:60px;border-radius:50%;
+  background:#105b8e;display:grid;place-items:center;
+  font-size:23px;font-weight:bold;
+}
+.profile strong{display:block;margin-bottom:7px}
+.profile span{font-size:13px;color:#b4cfe1}
+.actions{display:flex;gap:12px;margin-top:25px}
+.btn{
+  flex:1;padding:16px;border-radius:9px;
+  font-size:15px;font-weight:bold;cursor:pointer;
+}
+.primary{background:var(--blue);color:white;border:none}
+.primary:hover{background:#05a0e8}
+.outline{
+  background:transparent;color:#c8e5f7;
+  border:1px solid #5d91b5;
+}
+.outline:hover{background:#0d3b5c}
+.message{text-align:center;margin-top:15px;font-size:13px}
+footer{text-align:center;padding:15px;color:#d1d9e0;font-size:12px}
+@media(max-width:1000px){
+  .shell{grid-template-columns:1fr;padding:25px;gap:25px}
+  .identity{gap:25px}
+  .brand h1{font-size:42px}
+  .brand p{font-size:19px}
+  .logo{width:75px;height:75px}
+  .logo svg{width:50px}
+  .slogan{font-size:20px}
+  .panel{padding:26px}
+}
+@media(max-width:500px){
+  .shell{margin:0;padding:15px}
+  .grid{grid-template-columns:1fr}
+  .full{grid-column:auto}
+  .actions{flex-direction:column}
+}
+</style>
+<link href="../scs-global.css" rel="stylesheet"/><link href="../logo-sistema-candango.png" rel="icon" type="image/png"/></head>
+<body>
+<div class="shell">
+<section class="identity">
+<div class="brand">
+<div class="logo scs-identity-logo"><img alt="Logomarca do Sistema Candango de Salvamento" src="../logo-sistema-candango.png"/></div>
+<div>
+<h1 class="scs-identity-name">Sistema Candango de Salvamento</h1>
+<p class="scs-identity-description">Segurança e salvamento no Lago Paranoá</p>
+</div>
+</div>
+<div class="slogan">
+      Mais segurança<br/>para quem aproveita<br/>o Lago Paranoá.
+    </div>
+</section>
+<main class="panel">
+<a class="back" href="mapa_botao_panico.html">← Voltar ao início</a>
+<h2>Editar Cadastro de Banhista</h2>
+<p class="subtitle">Atualize suas informações pessoais e seu contato de emergência.</p>
+<div class="profile">
+<div class="avatar" id="avatar"><svg aria-hidden="true" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="8" r="4"></circle><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></svg></div>
+<div>
+<strong id="profileName">Banhista</strong>
+<span>Perfil Banhista</span>
+</div>
+</div>
+<form id="form">
+<h3>Informações pessoais</h3>
+<div class="grid">
+<div class="field full">
+<label for="nome">Nome completo *</label>
+<input id="nome" required=""/>
+</div>
+<div class="field">
+<label for="nascimento">Data de nascimento *</label>
+<input id="nascimento" required="" type="date"/>
+</div>
+<div class="field">
+<label for="cpf">CPF</label>
+<input disabled="" id="cpf"/>
+<small>Para alterar o CPF, procure o suporte.</small>
+</div>
+<div class="field">
+<label for="telefone">Telefone *</label>
+<input id="telefone" required="" type="tel"/>
+</div>
+<div class="field">
+<label for="email">E-mail *</label>
+<input id="email" required="" type="email"/>
+</div>
+</div>
+<h3>Contato de emergência</h3>
+<div class="grid">
+<div class="field">
+<label for="contato">Nome do contato</label>
+<input id="contato"/>
+</div>
+<div class="field">
+<label for="telefoneEmergencia">Telefone de emergência</label>
+<input id="telefoneEmergencia" type="tel"/>
+</div>
+</div>
+<div class="actions">
+<button class="btn outline" onclick="cancelar()" type="button">Cancelar</button>
+<button class="btn primary" type="submit">
+          Salvar Alterações
+        </button>
+</div>
+<div class="message" id="message" role="status"></div>
+</form>
+</main>
+</div>
+<footer>Sistema Candango de Salvamento © 2026 - Sistema Candango de Salvamento</footer>
+<script>
+const key="scs_profile_banhista";
+const defaults={
+  nome:"João Oliveira",
+  nascimento:"1998-05-15",
+  cpf:"123.456.789-09",
+  telefone:"(61) 99999-1111",
+  email:"joao@email.com",
+  contato:"Maria Oliveira",
+  telefoneEmergencia:"(61) 99999-2222"
+};
+const fields=[
+  "nome","nascimento","cpf","telefone",
+  "email","contato","telefoneEmergencia"
+];
+let original={};
+
+function carregar(){
+  let saved={};
+  try{
+    saved=JSON.parse(localStorage.getItem(key))||{};
+  }catch(e){}
+  original={...defaults,...saved};
+  fields.forEach(id=>{
+    document.getElementById(id).value=original[id]||"";
+  });
+  document.getElementById("profileName").textContent=original.nome;
+  document.getElementById("avatar").textContent=
+    original.nome.trim().split(/\s+/).slice(0,2)
+      .map(n=>n[0]).join("").toUpperCase();
+}
+function mensagem(texto,ok){
+  const el=document.getElementById("message");
+  el.textContent=texto;
+  el.style.color=ok?"#6ee7b7":"#ffb3a8";
+}
+function cancelar(){
+  carregar();
+  mensagem("Alterações canceladas.",true);
+}
+document.getElementById("form").addEventListener("submit",e=>{
+  e.preventDefault();
+  const data={...original};
+  fields.filter(id=>id!=="cpf").forEach(id=>{
+    data[id]=document.getElementById(id).value.trim();
+  });
+  if(!data.nome||!data.email||!data.telefone){
+    mensagem("Preencha os campos obrigatórios.",false);
+    return;
+  }
+  if(data.nascimento>new Date().toISOString().slice(0,10)){
+    mensagem("Data de nascimento inválida.",false);
+    return;
+  }
+  try{
+    localStorage.setItem(key,JSON.stringify(data));
+    carregar();
+    mensagem("Alterações salvas neste navegador!",true);
+  }catch(e){
+    mensagem("Não foi possível salvar os dados.",false);
+  }
+});
+carregar();
+</script>
+</body>
+</html>
